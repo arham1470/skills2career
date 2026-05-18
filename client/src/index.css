@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+  }
+  html::-webkit-scrollbar {
+    width: 6px;
+  }
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  html::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 9999px;
+  }
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+  body {
+    @apply font-sans bg-white text-gray-900;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-300 ease-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center bg-white border border-gray-200 hover:border-primary-300 text-gray-700 hover:text-primary-700 font-medium py-2.5 px-6 rounded-lg transition-all duration-300 ease-out shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 active:scale-[0.98];
+  }
+  .card {
+    @apply bg-white rounded-xl border border-gray-200/60 shadow-sm hover:shadow-md transition-all duration-300 ease-out;
+  }
+  .section-padding {
+    @apply py-20 md:py-28;
+  }
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-4;
+  }
+  .section-subtitle {
+    @apply text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed;
+  }
+}
+
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+  }
+
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .animate-delay-100 { animation-delay: 0.1s; }
+  .animate-delay-200 { animation-delay: 0.2s; }
+  .animate-delay-300 { animation-delay: 0.3s; }
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Custom react-datepicker theme to match primary blue */
+.react-datepicker {
+  @apply rounded-xl border border-gray-200 shadow-lg font-sans;
+}
+.react-datepicker__header {
+  @apply bg-primary-50 border-b border-gray-200 rounded-t-xl;
+}
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  @apply text-gray-700 font-medium;
+}
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  @apply rounded-md;
+}
+.react-datepicker__day:hover {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+  @apply rounded-md;
+}
+.react-datepicker__navigation:hover *::before {
+  border-color: #2563eb !important;
+}
+.react-datepicker__month-dropdown-container select,
+.react-datepicker__year-dropdown-container select {
+  @apply bg-white border border-gray-300 rounded-md text-sm px-2 py-1 outline-none focus:ring-2 focus:ring-primary-500;
+}
