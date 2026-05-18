@@ -64,3 +64,14 @@ coverage/
 # =========================
 *.tmp
 *.temp
+
+# =========================
+# Personal File
+# =========================
+
+admin.md
+new feature idea.txt
+passwords.md
+structure.md
+WorkDone.md
+workflow.md
