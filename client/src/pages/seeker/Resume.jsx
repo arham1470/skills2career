@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 import ConfirmModal from "../../components/ui/ConfirmModal";
+import SkillsAutocomplete from "../../components/ui/SkillsAutocomplete";
 import { getImageUrl } from "../../utils/getImageUrl";
 
 const Resume = () => {
@@ -37,6 +38,19 @@ const Resume = () => {
     certificates: false
   });
   const toggleSection = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
+  
+  const [skillsCategory, setSkillsCategory] = useState("Technology & IT");
+  const [categories, setCategories] = useState([]);
+  
+  const CATEGORIES = [
+    "Business & Administration", "Design & Creative Industries", "Education & Training",
+    "Engineering & Manufacturing", "Finance & Accounting", "Government & Public Sector",
+    "Healthcare & Wellness", "Hospitality & Tourism", "Legal & Compliance",
+    "Marketing & Communications", "Media & Entertainment", "Research & Development",
+    "Sales & Retail", "Social Services & Non-Profit", "Technology & IT",
+    "Architecture and Town Planning", "Environmental and Occupational Health",
+    "Creative Writing, Content & Translation", "Other"
+  ];
 
   useEffect(() => {
     const fetchResume = async () => {
@@ -571,56 +585,40 @@ const Resume = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Professional Summary</label>
               <textarea name="summary" rows="7" value={form.summary} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Brief overview of your career goals and strengths..." />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Skills Category (for suggestions)</label>
+              <select
+                value={skillsCategory}
+                onChange={(e) => setSkillsCategory(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white mb-4"
+              >
+                {CATEGORIES.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Core Skills</label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  <input
-                    value={newCoreSkill}
-                    onChange={(e) => setNewCoreSkill(e.target.value)}
-                    onKeyDown={(e) => handleTagKeyDown(e, "coreSkills", newCoreSkill, setNewCoreSkill)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
-                    placeholder="Add a core skill and press Enter"
-                  />
-                  <Button type="button" variant="outline" onClick={() => addTag("coreSkills", newCoreSkill, setNewCoreSkill)} className="py-2 px-3">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {form.coreSkills.map((skill, i) => (
-                    <span key={i} className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-700 px-2 py-1 rounded-md font-medium">
-                      {skill}
-                      <button type="button" onClick={() => removeTag("coreSkills", skill)} className="hover:text-red-900">
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
+                <SkillsAutocomplete
+                  selectedSkills={form.coreSkills}
+                  onAddSkill={(skill) => setForm({ ...form, coreSkills: [...form.coreSkills, skill] })}
+                  onRemoveSkill={(skill) => setForm({ ...form, coreSkills: form.coreSkills.filter(s => s !== skill) })}
+                  skillType="core"
+                  category={skillsCategory}
+                  placeholder="Add a core skill and press Enter"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Additional Skills</label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  <input
-                    value={newAdditionalSkill}
-                    onChange={(e) => setNewAdditionalSkill(e.target.value)}
-                    onKeyDown={(e) => handleTagKeyDown(e, "additionalSkills", newAdditionalSkill, setNewAdditionalSkill)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none text-sm"
-                    placeholder="Add an additional skill and press Enter"
-                  />
-                  <Button type="button" variant="outline" onClick={() => addTag("additionalSkills", newAdditionalSkill, setNewAdditionalSkill)} className="py-2 px-3">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {form.additionalSkills.map((skill, i) => (
-                    <span key={i} className="inline-flex items-center gap-1 text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded-md font-medium">
-                      {skill}
-                      <button type="button" onClick={() => removeTag("additionalSkills", skill)} className="hover:text-primary-900">
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
+                <SkillsAutocomplete
+                  selectedSkills={form.additionalSkills}
+                  onAddSkill={(skill) => setForm({ ...form, additionalSkills: [...form.additionalSkills, skill] })}
+                  onRemoveSkill={(skill) => setForm({ ...form, additionalSkills: form.additionalSkills.filter(s => s !== skill) })}
+                  skillType="additional"
+                  category={skillsCategory}
+                  placeholder="Add an additional skill and press Enter"
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Interests</label>

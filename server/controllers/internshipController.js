@@ -1,20 +1,53 @@
 const Internship = require("../models/Internship");
 const SeekerProfile = require("../models/SeekerProfile");
 const CompanyProfile = require("../models/CompanyProfile");
+const skillsDatabase = require("../data/skillsDatabase");
 
 // --- SEEKER / PUBLIC ENDPOINTS ---
 
-const calculateSingleMatch = (seekerSkills, targetSkills) => {
+// Normalize skill to match database standard
+const normalizeSkill = (skill, category) => {
+  if (!skill) return skill;
+  const trimmed = skill.trim();
+  
+  if (!category || !skillsDatabase[category]) {
+    return trimmed;
+  }
+  
+  const categorySkills = skillsDatabase[category];
+  const allSkills = [...(categorySkills.coreSkills || []), ...(categorySkills.additionalSkills || [])];
+  
+  // Try exact match (case-insensitive)
+  const exactMatch = allSkills.find(s => s.toLowerCase() === trimmed.toLowerCase());
+  if (exactMatch) return exactMatch;
+  
+  // Try partial match (skill contains input or input contains skill)
+  const partialMatch = allSkills.find(s => 
+    s.toLowerCase().includes(trimmed.toLowerCase()) || 
+    trimmed.toLowerCase().includes(s.toLowerCase())
+  );
+  if (partialMatch) return partialMatch;
+  
+  // Return original if no match found
+  return trimmed;
+};
+
+const calculateSingleMatch = (seekerSkills, targetSkills, category = null) => {
   if (!targetSkills || targetSkills.length === 0) return 0;
-  const seekerSet = new Set(seekerSkills.map(s => s.toLowerCase().trim()));
-  const matchCount = targetSkills.filter(skill => seekerSet.has(skill.toLowerCase().trim())).length;
-  return Math.round((matchCount / targetSkills.length) * 100);
+  
+  // Normalize skills for better matching
+  const normalizedSeekerSkills = seekerSkills.map(s => normalizeSkill(s, category));
+  const normalizedTargetSkills = targetSkills.map(s => normalizeSkill(s, category));
+  
+  const seekerSet = new Set(normalizedSeekerSkills.map(s => s.toLowerCase().trim()));
+  const matchCount = normalizedTargetSkills.filter(skill => seekerSet.has(skill.toLowerCase().trim())).length;
+  return Math.round((matchCount / normalizedTargetSkills.length) * 100);
 };
 
 // Weighted matching: seeker core vs company core (75%), seeker additional vs company additional (25%)
-const calculateMatch = (seekerCoreSkills, seekerAdditionalSkills, companyCoreSkills, companyAdditionalSkills) => {
-  const coreMatch = calculateSingleMatch(seekerCoreSkills || [], companyCoreSkills);
-  const addMatch = calculateSingleMatch(seekerAdditionalSkills || [], companyAdditionalSkills);
+const calculateMatch = (seekerCoreSkills, seekerAdditionalSkills, companyCoreSkills, companyAdditionalSkills, category = null) => {
+  const coreMatch = calculateSingleMatch(seekerCoreSkills || [], companyCoreSkills, category);
+  const addMatch = calculateSingleMatch(seekerAdditionalSkills || [], companyAdditionalSkills, category);
   // If company has no additional skills, weight shifts to 100% core
   if (!companyAdditionalSkills || companyAdditionalSkills.length === 0) {
     return coreMatch;
@@ -40,7 +73,7 @@ exports.getRecommended = async (req, res) => {
     const internships = await Internship.find(query).lean();
     const matched = internships.map(internship => ({
       ...internship,
-      matchPercentage: calculateMatch(seekerCoreSkills, seekerAdditionalSkills, internship.coreSkills, internship.additionalSkills)
+      matchPercentage: calculateMatch(seekerCoreSkills, seekerAdditionalSkills, internship.coreSkills, internship.additionalSkills, internship.category)
     }));
 
     matched.sort((a, b) => b.matchPercentage - a.matchPercentage);
@@ -218,7 +251,7 @@ exports.browseInternships = async (req, res) => {
       if (seekerCoreSkills.length > 0 || seekerAdditionalSkills.length > 0) {
         internships = internships.map(job => ({
           ...job,
-          matchPercentage: calculateMatch(seekerCoreSkills, seekerAdditionalSkills, job.coreSkills, job.additionalSkills)
+          matchPercentage: calculateMatch(seekerCoreSkills, seekerAdditionalSkills, job.coreSkills, job.additionalSkills, job.category)
         }));
         // Optional: Sort by match percentage descending
         internships.sort((a, b) => (b.matchPercentage || 0) - (a.matchPercentage || 0));

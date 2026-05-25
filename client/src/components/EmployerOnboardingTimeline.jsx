@@ -47,6 +47,8 @@ const EmployerOnboardingTimeline = ({ profileCompletion = 0, verified = false })
   const allDone = states.every((s) => s === "completed");
   const currentIndex = states.indexOf("current");
 
+  if (allDone) return null;
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}

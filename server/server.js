@@ -22,6 +22,7 @@ const adminRoutes = require("./routes/admin");
 const candidateRoutes = require("./routes/candidate");
 const employerRoutes = require("./routes/employer");
 const interviewRoutes = require("./routes/interview");
+const skillsRoutes = require("./routes/skills");
 
 
 const app = express();
@@ -80,6 +81,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/candidates", candidateRoutes);
 app.use("/api/employer", employerRoutes);
 app.use("/api/interviews", interviewRoutes);
+app.use("/api/skills", skillsRoutes);
 
 // Error Handling
 app.use(notFound);

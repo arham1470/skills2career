@@ -6,6 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 import CustomSelect from "../../components/ui/CustomSelect";
+import SkillsAutocomplete from "../../components/ui/SkillsAutocomplete";
 
 const CATEGORIES = [
   "Business & Administration", "Design & Creative Industries", "Education & Training",
@@ -32,9 +33,7 @@ const PostInternship = () => {
     salaryMin: "", salaryMax: "", description: "", responsibilities: "", deadline: "", status: "Draft"
   });
   const [coreSkills, setCoreSkills] = useState([]);
-  const [coreSkillInput, setCoreSkillInput] = useState("");
   const [additionalSkills, setAdditionalSkills] = useState([]);
-  const [additionalSkillInput, setAdditionalSkillInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [profileCompletion, setProfileCompletion] = useState(null);
@@ -54,26 +53,7 @@ const PostInternship = () => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleCoreSkillKeyDown = (e) => {
-    if ((e.key === "Enter" || e.key === ",") && coreSkillInput.trim()) {
-      e.preventDefault();
-      const newSkill = coreSkillInput.trim();
-      if (!coreSkills.includes(newSkill)) setCoreSkills([...coreSkills, newSkill]);
-      setCoreSkillInput("");
-    }
-  };
-
   const removeCoreSkill = (skill) => setCoreSkills(coreSkills.filter(s => s !== skill));
-
-  const handleAdditionalSkillKeyDown = (e) => {
-    if ((e.key === "Enter" || e.key === ",") && additionalSkillInput.trim()) {
-      e.preventDefault();
-      const newSkill = additionalSkillInput.trim();
-      if (!additionalSkills.includes(newSkill)) setAdditionalSkills([...additionalSkills, newSkill]);
-      setAdditionalSkillInput("");
-    }
-  };
-
   const removeAdditionalSkill = (skill) => setAdditionalSkills(additionalSkills.filter(s => s !== skill));
 
   const handleSubmit = async (e) => {
@@ -220,43 +200,27 @@ const PostInternship = () => {
         <div className="grid sm:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Core Skills <span className="text-red-500">*</span></label>
-            <div className="flex flex-wrap gap-2 p-3 border border-gray-300 rounded-lg min-h-[46px] focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 bg-white">
-              {coreSkills.map(skill => (
-                <span key={skill} className="inline-flex items-center gap-1 bg-red-50 text-red-700 px-2.5 py-1 rounded-md text-sm font-medium">
-                  {skill}
-                  <button type="button" onClick={() => removeCoreSkill(skill)} className="text-red-400 hover:text-red-600"><X className="w-3.5 h-3.5" /></button>
-                </span>
-              ))}
-              <input
-                type="text"
-                value={coreSkillInput}
-                onChange={(e) => setCoreSkillInput(e.target.value)}
-                onKeyDown={handleCoreSkillKeyDown}
-                className="flex-1 min-w-[120px] outline-none text-sm bg-transparent"
-                placeholder={coreSkills.length === 0 ? "Type skill & press Enter" : "Add more..."}
-              />
-            </div>
+            <SkillsAutocomplete
+              selectedSkills={coreSkills}
+              onAddSkill={(skill) => setCoreSkills([...coreSkills, skill])}
+              onRemoveSkill={(skill) => setCoreSkills(coreSkills.filter(s => s !== skill))}
+              skillType="core"
+              category={form.category}
+              placeholder="Type skill & press Enter"
+            />
             <p className="text-xs text-gray-500 mt-1">Most important skills for this role (3-4 recommended).</p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Additional Skills</label>
-            <div className="flex flex-wrap gap-2 p-3 border border-gray-300 rounded-lg min-h-[46px] focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 bg-white">
-              {additionalSkills.map(skill => (
-                <span key={skill} className="inline-flex items-center gap-1 bg-primary-50 text-primary-700 px-2.5 py-1 rounded-md text-sm font-medium">
-                  {skill}
-                  <button type="button" onClick={() => removeAdditionalSkill(skill)} className="text-primary-400 hover:text-red-500"><X className="w-3.5 h-3.5" /></button>
-                </span>
-              ))}
-              <input
-                type="text"
-                value={additionalSkillInput}
-                onChange={(e) => setAdditionalSkillInput(e.target.value)}
-                onKeyDown={handleAdditionalSkillKeyDown}
-                className="flex-1 min-w-[120px] outline-none text-sm bg-transparent"
-                placeholder={additionalSkills.length === 0 ? "Type skill & press Enter" : "Add more..."}
-              />
-            </div>
+            <SkillsAutocomplete
+              selectedSkills={additionalSkills}
+              onAddSkill={(skill) => setAdditionalSkills([...additionalSkills, skill])}
+              onRemoveSkill={(skill) => setAdditionalSkills(additionalSkills.filter(s => s !== skill))}
+              skillType="additional"
+              category={form.category}
+              placeholder="Type skill & press Enter"
+            />
             <p className="text-xs text-gray-500 mt-1">Nice-to-have skills that improve a candidate&apos;s profile.</p>
           </div>
         </div>

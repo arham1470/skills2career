@@ -8,6 +8,7 @@ import api from "../../utils/api";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/ui/Button";
 import ConfirmModal from "../../components/ui/ConfirmModal";
+import SkillsAutocomplete from "../../components/ui/SkillsAutocomplete";
 
 const STATUS_COLORS = { Active: "success", Draft: "warning", Closed: "danger" };
 
@@ -49,9 +50,7 @@ const ManageInternships = () => {
     salaryMin: "", salaryMax: "", description: "", responsibilities: "", deadline: "", status: "Draft"
   });
   const [editCoreSkills, setEditCoreSkills] = useState([]);
-  const [editCoreSkillInput, setEditCoreSkillInput] = useState("");
   const [editAdditionalSkills, setEditAdditionalSkills] = useState([]);
-  const [editAdditionalSkillInput, setEditAdditionalSkillInput] = useState("");
   const [editLoading, setEditLoading] = useState(false);
 
   const fetchInternships = async () => {
@@ -109,34 +108,13 @@ const ManageInternships = () => {
       status: job.status || "Draft"
     });
     setEditCoreSkills(job.coreSkills || []);
-    setEditCoreSkillInput("");
     setEditAdditionalSkills(job.additionalSkills || []);
-    setEditAdditionalSkillInput("");
     setShowEditModal(true);
   };
 
   const handleEditChange = (e) => setEditForm({ ...editForm, [e.target.name]: e.target.value });
 
-  const handleEditCoreSkillKeyDown = (e) => {
-    if ((e.key === "Enter" || e.key === ",") && editCoreSkillInput.trim()) {
-      e.preventDefault();
-      const newSkill = editCoreSkillInput.trim();
-      if (!editCoreSkills.includes(newSkill)) setEditCoreSkills([...editCoreSkills, newSkill]);
-      setEditCoreSkillInput("");
-    }
-  };
-
   const removeEditCoreSkill = (skill) => setEditCoreSkills(editCoreSkills.filter(s => s !== skill));
-
-  const handleEditAdditionalSkillKeyDown = (e) => {
-    if ((e.key === "Enter" || e.key === ",") && editAdditionalSkillInput.trim()) {
-      e.preventDefault();
-      const newSkill = editAdditionalSkillInput.trim();
-      if (!editAdditionalSkills.includes(newSkill)) setEditAdditionalSkills([...editAdditionalSkills, newSkill]);
-      setEditAdditionalSkillInput("");
-    }
-  };
-
   const removeEditAdditionalSkill = (skill) => setEditAdditionalSkills(editAdditionalSkills.filter(s => s !== skill));
 
   const submitEdit = async (e) => {
@@ -330,42 +308,26 @@ const ManageInternships = () => {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Core Skills <span className="text-red-500">*</span></label>
-                  <div className="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg min-h-[42px] focus-within:ring-2 focus-within:ring-primary-500 bg-white">
-                    {editCoreSkills.map(skill => (
-                      <span key={skill} className="inline-flex items-center gap-1 bg-red-50 text-red-700 px-2 py-0.5 rounded-md text-xs font-medium">
-                        {skill}
-                        <button type="button" onClick={() => removeEditCoreSkill(skill)} className="text-red-400 hover:text-red-600"><X className="w-3 h-3" /></button>
-                      </span>
-                    ))}
-                    <input
-                      type="text"
-                      value={editCoreSkillInput}
-                      onChange={(e) => setEditCoreSkillInput(e.target.value)}
-                      onKeyDown={handleEditCoreSkillKeyDown}
-                      className="flex-1 min-w-[100px] outline-none text-sm bg-transparent"
-                      placeholder={editCoreSkills.length === 0 ? "Type & press Enter" : "Add more..."}
-                    />
-                  </div>
+                  <SkillsAutocomplete
+                    selectedSkills={editCoreSkills}
+                    onAddSkill={(skill) => setEditCoreSkills([...editCoreSkills, skill])}
+                    onRemoveSkill={removeEditCoreSkill}
+                    skillType="core"
+                    category={editForm.category}
+                    placeholder="Type skill & press Enter"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Additional Skills</label>
-                  <div className="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg min-h-[42px] focus-within:ring-2 focus-within:ring-primary-500 bg-white">
-                    {editAdditionalSkills.map(skill => (
-                      <span key={skill} className="inline-flex items-center gap-1 bg-primary-50 text-primary-700 px-2 py-0.5 rounded-md text-xs font-medium">
-                        {skill}
-                        <button type="button" onClick={() => removeEditAdditionalSkill(skill)} className="text-primary-400 hover:text-red-500"><X className="w-3 h-3" /></button>
-                      </span>
-                    ))}
-                    <input
-                      type="text"
-                      value={editAdditionalSkillInput}
-                      onChange={(e) => setEditAdditionalSkillInput(e.target.value)}
-                      onKeyDown={handleEditAdditionalSkillKeyDown}
-                      className="flex-1 min-w-[100px] outline-none text-sm bg-transparent"
-                      placeholder={editAdditionalSkills.length === 0 ? "Type & press Enter" : "Add more..."}
-                    />
-                  </div>
+                  <SkillsAutocomplete
+                    selectedSkills={editAdditionalSkills}
+                    onAddSkill={(skill) => setEditAdditionalSkills([...editAdditionalSkills, skill])}
+                    onRemoveSkill={removeEditAdditionalSkill}
+                    skillType="additional"
+                    category={editForm.category}
+                    placeholder="Type skill & press Enter"
+                  />
                 </div>
               </div>
 

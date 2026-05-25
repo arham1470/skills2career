@@ -22,6 +22,8 @@ const ProfileTimeline = ({ completion = 0 }) => {
   const isComplete = completion >= 100;
   const currentIndex = steps.findIndex((_, i) => getStepState(i, completion) === "current");
 
+  if (isComplete) return null;
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Header */}
