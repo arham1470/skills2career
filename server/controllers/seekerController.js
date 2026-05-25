@@ -327,6 +327,64 @@ exports.getCareerQuiz = async (req, res) => {
   }
 };
 
+exports.getRecentInternships = async (req, res) => {
+  try {
+    const profile = await SeekerProfile.findOne({ user: req.user.id }).select("preferences careerAssessment");
+
+    let categories = profile?.preferences?.categories || [];
+    if (categories.length === 0 && profile?.careerAssessment?.topCareer) {
+      categories = [profile.careerAssessment.topCareer];
+    }
+
+    const query = { status: "Active" };
+    if (categories.length > 0) {
+      query.category = { $in: categories };
+    }
+
+    const internships = await Internship.find(query)
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .select("title company location mode category salaryMin salaryMax coreSkills additionalSkills createdAt");
+
+    res.status(200).json({ internships });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch recent internships", error: error.message });
+  }
+};
+
+exports.getTrendingSkills = async (req, res) => {
+  try {
+    const profile = await SeekerProfile.findOne({ user: req.user.id }).select("preferences careerAssessment");
+
+    let categories = profile?.preferences?.categories || [];
+    if (categories.length === 0 && profile?.careerAssessment?.topCareer) {
+      categories = [profile.careerAssessment.topCareer];
+    }
+    if (categories.length === 0) {
+      return res.status(200).json({ skills: [] });
+    }
+
+    const internships = await Internship.find({ status: "Active", category: { $in: categories } }).select("coreSkills additionalSkills");
+
+    const skillCounts = {};
+    internships.forEach((job) => {
+      [...(job.coreSkills || []), ...(job.additionalSkills || [])].forEach((skill) => {
+        const key = skill.trim();
+        if (key) skillCounts[key] = (skillCounts[key] || 0) + 1;
+      });
+    });
+
+    const sorted = Object.entries(skillCounts)
+      .map(([skill, count]) => ({ skill, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    res.status(200).json({ skills: sorted });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch trending skills", error: error.message });
+  }
+};
+
 exports.deleteAccount = async (req, res) => {
   try {
     const { currentPassword } = req.body;

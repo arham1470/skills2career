@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, Clock, Building2, Filter, ChevronLeft, ChevronRight, X, Loader2, XCircle, Briefcase, MapPin as LocationIcon, Monitor, ChevronDown, ChevronUp, BadgeDollarSign, Zap, Target, Sparkles, Send } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../utils/api";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -113,6 +113,7 @@ const SkeletonCard = () => (
 const BrowseInternships = () => {
   // 1. All Hooks at the top level (Strict React Rules)
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   
   const [internships, setInternships] = useState([]);
@@ -122,7 +123,7 @@ const BrowseInternships = () => {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
   
-  const [filters, setFilters] = useState({ category: "", location: "", mode: "" });
+  const [filters, setFilters] = useState({ category: "", location: "", mode: "", skill: "" });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({ category: false, location: false, mode: false });
   
@@ -133,12 +134,14 @@ const BrowseInternships = () => {
   const fetchInternships = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams({
-        page: pagination.page,
-        limit: 9,
-        search: debouncedSearch,
-        ...filters
-      });
+      const params = new URLSearchParams();
+      params.set("page", pagination.page);
+      params.set("limit", 9);
+      if (debouncedSearch) params.set("search", debouncedSearch);
+      if (filters.category) params.set("category", filters.category);
+      if (filters.location) params.set("location", filters.location);
+      if (filters.mode) params.set("mode", filters.mode);
+      if (filters.skill) params.set("skill", filters.skill);
       const res = await api.get(`/internships/browse?${params}`);
       setInternships(res.data.internships);
       setPagination({ ...res.data.pagination, total: res.data.total || res.data.internships.length });
@@ -161,9 +164,18 @@ const BrowseInternships = () => {
   };
 
   const clearFilters = () => {
-    setFilters({ category: "", location: "", mode: "" });
+    setFilters({ category: "", location: "", mode: "", skill: "" });
     setSearch("");
   };
+
+  // Initialize skill filter from URL query param on mount
+  useEffect(() => {
+    const skillFromUrl = searchParams.get("skill");
+    if (skillFromUrl) {
+      setFilters(prev => ({ ...prev, skill: skillFromUrl }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
@@ -336,7 +348,15 @@ const BrowseInternships = () => {
                     </button>
                   </span>
                 )}
-                {(filters.category || filters.location || filters.mode) && (
+                {filters.skill && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-700 text-sm font-medium rounded-full border border-orange-200">
+                    {filters.skill}
+                    <button onClick={() => handleFilterChange("skill", filters.skill)} className="hover:text-orange-900">
+                      <XCircle className="w-4 h-4" />
+                    </button>
+                  </span>
+                )}
+                {(filters.category || filters.location || filters.mode || filters.skill) && (
                   <button onClick={clearFilters} className="text-sm text-red-600 hover:text-red-700 font-medium ml-2">Clear all</button>
                 )}
               </div>

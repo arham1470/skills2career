@@ -19,3 +19,12 @@ exports.markRead = async (req, res) => {
     res.status(500).json({ message: "Failed to update notification", error: error.message });
   }
 };
+
+exports.markAllRead = async (req, res) => {
+  try {
+    await Notification.updateMany({ user: req.user.id, read: false }, { read: true });
+    res.status(200).json({ message: "All notifications marked as read" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update notifications", error: error.message });
+  }
+};

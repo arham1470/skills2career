@@ -212,7 +212,7 @@ exports.toggleStatus = async (req, res) => {
 // Add this to exports or inside the file
 exports.browseInternships = async (req, res) => {
   try {
-    const { search, category, location, mode, page = 1, limit = 9 } = req.query;
+    const { search, category, location, mode, skill, page = 1, limit = 9 } = req.query;
     const query = { status: "Active" };
 
     // Search Logic
@@ -231,6 +231,11 @@ exports.browseInternships = async (req, res) => {
     if (category) query.category = category;
     if (location) query.location = location;
     if (mode) query.mode = mode;
+    if (skill) {
+      const skillRegex = new RegExp(skill, "i");
+      query.$or = query.$or || [];
+      query.$or.push({ coreSkills: skillRegex }, { additionalSkills: skillRegex });
+    }
 
     // Pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);

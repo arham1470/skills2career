@@ -16,6 +16,8 @@ const {
   getCertificates, uploadCertificate, deleteCertificate,
   getCV, uploadCV,
   getDashboardStats,
+  getTrendingSkills,
+  getRecentInternships,
   deleteAccount,
   saveCareerQuiz,
   getCareerQuiz
@@ -49,6 +51,8 @@ router.post("/cv", uploadCVFile.single("cvFile"), uploadCV);
 
 // Dashboard Stats
 router.get("/dashboard-stats", getDashboardStats);
+router.get("/trending-skills", getTrendingSkills);
+router.get("/recent-internships", getRecentInternships);
 
 // Career Assessment Quiz
 router.get("/career-quiz", getCareerQuiz);
