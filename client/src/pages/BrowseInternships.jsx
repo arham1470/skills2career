@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, Clock, Building2, Filter, ChevronLeft, ChevronRight, X, Loader2, XCircle, Briefcase, MapPin as LocationIcon, Monitor, ChevronDown, ChevronUp, BadgeDollarSign, Zap, Target, Sparkles, Send } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import api from "../utils/api";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -114,6 +114,7 @@ const BrowseInternships = () => {
   // 1. All Hooks at the top level (Strict React Rules)
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const { user } = useAuth();
   
   const [internships, setInternships] = useState([]);
@@ -175,6 +176,11 @@ const BrowseInternships = () => {
       setFilters(prev => ({ ...prev, skill: skillFromUrl }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Scroll to top when navigating to this page
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const toggleSection = (section) => {
