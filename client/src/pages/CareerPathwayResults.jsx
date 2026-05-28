@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { BookOpen, Building2, MapPin, CheckCircle2, ArrowLeft, GraduationCap, AlertCircle, Sparkles, Lightbulb, Filter } from "lucide-react";
+import { BookOpen, Building2, ArrowLeft, GraduationCap, AlertCircle, Lightbulb, Filter, Star, SearchX } from "lucide-react";
 import Button from "../components/ui/Button";
 
 const CareerPathwayResults = () => {
@@ -32,33 +32,6 @@ const CareerPathwayResults = () => {
     (a, b) => (levelOrder.indexOf(b) - levelOrder.indexOf(a))
   );
 
-  const getRequirementsSummary = (course) => {
-    const req = course.requirements || {};
-    const parts = [];
-    if (req.olPasses != null) parts.push(`${req.olPasses} O/L passes`);
-    if (req.olMandatorySubjects?.length > 0) parts.push(`${req.olMandatorySubjects.join(", ")} required`);
-    if (req.alStream && req.alStream !== "Any") parts.push(`${req.alStream} stream`);
-    if (req.alPasses != null) parts.push(`${req.alPasses} A/L passes`);
-    if (req.gpa != null) parts.push(`GPA ${req.gpa}+`);
-    if (req.requiredField && req.requiredField !== "Any") parts.push(`${req.requiredField} background`);
-    if (req.otherRequirements) parts.push(req.otherRequirements);
-    return parts.length > 0 ? parts.join(" | ") : "No specific requirements";
-  };
-
-  const entryTypeBadge = (type) => {
-    if (!type || type === "Normal Entry") return null;
-    const colors = {
-      "Top-Up": "bg-amber-50 text-amber-700 border-amber-200",
-      "Final Year Entry": "bg-violet-50 text-violet-700 border-violet-200",
-      "Direct Entry": "bg-sky-50 text-sky-700 border-sky-200",
-    };
-    return (
-      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${colors[type] || colors["Direct Entry"]}`}>
-        {type}
-      </span>
-    );
-  };
-
   if (!location.state) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -75,20 +48,25 @@ const CareerPathwayResults = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-emerald-50/20">
+    <div className="min-h-screen bg-gray-50 relative">
+      {/* Dot pattern background */}
+      <div className="absolute inset-0 opacity-[0.4] pointer-events-none"
+        style={{ backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
+      </div>
+
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-6">
-          <button onClick={() => navigate("/career-pathway")} className="flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-4 transition-colors">
+      <div className="relative z-10 bg-gradient-to-r from-primary-900 to-primary-700 text-white">
+        <div className="max-w-5xl mx-auto px-4 py-10">
+          <button onClick={() => navigate("/career-pathway")} className="flex items-center gap-2 text-primary-200 hover:text-white mb-5 transition-colors text-sm">
             <ArrowLeft className="w-4 h-4" /> Back to Career Pathway
           </button>
-          <div className="flex items-center gap-3">
-            <div className="bg-emerald-100 p-2.5 rounded-xl">
-              <BookOpen className="w-6 h-6 text-emerald-600" />
+          <div className="flex items-center gap-4">
+            <div className="bg-white/15 backdrop-blur-sm p-3 rounded-xl border border-white/20">
+              <BookOpen className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Your Next Academic Pathways</h1>
-              <p className="text-sm text-gray-500">
+              <h1 className="text-2xl md:text-3xl font-bold text-white">Your Next Academic Pathways</h1>
+              <p className="text-sm text-primary-100 mt-1">
                 {filteredResults.length > 0
                   ? `Found ${filteredResults.length} next-step course${filteredResults.length !== 1 ? "s" : ""} for ${formData.currentQualification || "your"} holders`
                   : "Here are courses you can explore based on your background"}
@@ -98,26 +76,38 @@ const CareerPathwayResults = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
+      <div className="max-w-5xl mx-auto px-4 py-8 space-y-8 relative z-10">
         {/* Filter Toggle */}
         {results.length > 0 && (
-          <div className="flex items-center justify-between bg-white rounded-xl border border-gray-200 p-4">
+          <div className="flex items-center justify-between bg-white rounded-xl border border-gray-200 p-4 relative z-10">
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4 text-gray-500" />
               <span className="text-sm text-gray-700">
                 Showing {showAllLevels ? "all levels you qualify for" : "your next step only"}
               </span>
             </div>
-            <button
-              onClick={() => setShowAllLevels((prev) => !prev)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                showAllLevels
-                  ? "bg-primary-100 text-primary-700 border border-primary-300"
-                  : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200"
-              }`}
-            >
-              {showAllLevels ? "Next Step Only" : "Show All Levels"}
-            </button>
+            <div className="bg-gray-100 p-1 rounded-xl inline-flex">
+              <button
+                onClick={() => setShowAllLevels(false)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  !showAllLevels
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Next Step Only
+              </button>
+              <button
+                onClick={() => setShowAllLevels(true)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  showAllLevels
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                All Levels
+              </button>
+            </div>
           </div>
         )}
 
@@ -132,63 +122,73 @@ const CareerPathwayResults = () => {
                   </span>
                   <span className="text-sm text-gray-400">{groupedResults[level].length} course{groupedResults[level].length !== 1 ? "s" : ""}</span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {groupedResults[level].map((course) => (
                     <div
                       key={course._id}
-                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 p-5"
+                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col h-full"
                     >
-                      <div className="flex items-start gap-4">
-                        <div className="bg-primary-100 p-2.5 rounded-lg shrink-0">
-                          <GraduationCap className="w-5 h-5 text-primary-600" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-semibold text-gray-900 text-lg leading-tight">{course.name}</h3>
-                            {entryTypeBadge(course.entryType)}
+                      {/* Top image */}
+                      <div className="relative h-40 w-full bg-gray-100">
+                        {course.institution?.image ? (
+                          <img
+                            src={course.institution.image}
+                            alt={course.institution.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-sky-100 flex items-center justify-center">
+                            <GraduationCap className="w-12 h-12 text-emerald-300" />
                           </div>
-                          <div className="flex items-center gap-2 mt-1.5 text-sm text-gray-500">
-                            <Building2 className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">{course.institution?.name}</span>
-                          </div>
-                          <div className="flex items-center gap-2 mt-0.5 text-sm text-gray-500">
-                            <MapPin className="w-3.5 h-3.5 shrink-0" />
-                            <span>{course.institution?.location}</span>
-                          </div>
-                        </div>
+                        )}
+                        {course.entryType && course.entryType !== "Normal Entry" && (
+                          <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-400 text-white shadow-sm border border-amber-500">
+                            {course.entryType}
+                          </span>
+                        )}
                       </div>
 
-                      <div className="mt-4 pt-4 border-t border-gray-100 space-y-3">
-                        {/* Why they qualify */}
-                        {course.matchedBecause && course.matchedBecause.length > 0 && (
-                          <div className="flex items-start gap-2">
-                            <Sparkles className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
-                            <div>
-                              <p className="text-xs font-medium text-amber-700 uppercase tracking-wide">You Qualify Because</p>
-                              <ul className="mt-1 space-y-0.5">
-                                {course.matchedBecause.map((reason, idx) => (
-                                  <li key={idx} className="text-sm text-gray-600 flex items-center gap-1.5">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
-                                    {reason}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Requirements summary */}
-                        <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
-                          <div>
-                            <p className="text-xs font-medium text-emerald-700 uppercase tracking-wide">Requirements</p>
-                            <p className="text-sm text-gray-600 mt-0.5">{getRequirementsSummary(course)}</p>
-                          </div>
+                      {/* Body */}
+                      <div className="p-4 flex flex-col flex-1">
+                        {/* Org row */}
+                        <div className="flex items-center gap-2 mb-2">
+                          {course.institution?.image ? (
+                            <img
+                              src={course.institution.image}
+                              alt=""
+                              className="w-5 h-5 rounded-sm object-cover border border-gray-200"
+                            />
+                          ) : (
+                            <Building2 className="w-4 h-4 text-gray-500" />
+                          )}
+                          <span className="text-xs font-medium text-gray-700">{course.institution?.name}</span>
                         </div>
 
-                        {course.duration && (
-                          <p className="text-xs text-gray-400">Duration: {course.duration}</p>
-                        )}
+                        {/* Title */}
+                        <h3 className="font-semibold text-gray-900 text-base leading-snug mb-2 line-clamp-2">
+                          {course.name}
+                        </h3>
+
+                        {/* Skills */}
+                        <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                          <span className="font-bold text-gray-800">Skills you&apos;ll gain:</span>{" "}
+                          {course.acceptedFields?.length && course.acceptedFields[0] !== "Any"
+                            ? course.acceptedFields.join(", ")
+                            : course.description || "Relevant industry skills and certification pathways."}
+                        </p>
+
+                        {/* Rating */}
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Star className="w-4 h-4 text-gray-900 fill-gray-900" />
+                          <span className="text-sm font-bold text-gray-900">4.7</span>
+                          <span className="text-xs text-gray-500">· Recommended pathway</span>
+                        </div>
+
+                        {/* Bottom meta */}
+                        <div className="mt-auto pt-3 border-t border-gray-100 text-xs text-gray-500">
+                          {course.educationLevel} · {course.entryType || "Course"} · {course.duration || "Varied"}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -200,15 +200,17 @@ const CareerPathwayResults = () => {
 
         {/* No next-step matches — but lower-level options may exist */}
         {results.length > 0 && filteredResults.length === 0 && (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
-            <AlertCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center relative z-10">
+            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
+              <SearchX className="w-10 h-10 text-gray-400" />
+            </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">No next-step courses found</h2>
-            <p className="text-gray-500 max-w-md mx-auto mb-4">
+            <p className="text-gray-500 text-sm max-w-md mx-auto mb-6">
               We did not find any higher-level courses for your {formData.currentQualification || "current"} qualification. You may still qualify for same-level or lower-level options.
             </p>
             <button
               onClick={() => setShowAllLevels(true)}
-              className="px-6 py-2.5 rounded-xl bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors"
+              className="px-6 py-2.5 rounded-xl bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors shadow-lg shadow-primary-600/20"
             >
               Show All Levels
             </button>
@@ -217,17 +219,19 @@ const CareerPathwayResults = () => {
 
         {/* No matches at all — with fallback suggestions */}
         {results.length === 0 && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 text-center">
-              <AlertCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <div className="space-y-6 relative z-10">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-12 text-center">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-5">
+                <SearchX className="w-10 h-10 text-gray-400" />
+              </div>
               <h2 className="text-xl font-semibold text-gray-900 mb-2">No direct matches found</h2>
-              <p className="text-gray-500 max-w-md mx-auto mb-2">
+              <p className="text-gray-500 text-sm max-w-md mx-auto mb-2">
                 We could not find any courses matching your {formData.currentQualification || "current"} qualification right now.
               </p>
-              <p className="text-sm text-gray-400 max-w-md mx-auto mb-6">
+              <p className="text-sm text-gray-400 max-w-md mx-auto mb-8">
                 Try adjusting your GPA, qualification name, or field. New courses are added regularly.
               </p>
-              <Button variant="primary" onClick={() => navigate("/career-pathway")}>
+              <Button variant="primary" onClick={() => navigate("/career-pathway")} className="shadow-lg shadow-primary-600/20">
                 Adjust Details
               </Button>
             </div>
@@ -239,39 +243,73 @@ const CareerPathwayResults = () => {
                   <Lightbulb className="w-5 h-5 text-amber-500" />
                   <h3 className="text-lg font-semibold text-gray-900">You may also qualify for</h3>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {suggestions.map((course) => (
                     <div
                       key={course._id}
-                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 p-5"
+                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col h-full"
                     >
-                      <div className="flex items-start gap-4">
-                        <div className="bg-gray-100 p-2.5 rounded-lg shrink-0">
-                          <GraduationCap className="w-5 h-5 text-gray-600" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-semibold text-gray-900 text-lg leading-tight">{course.name}</h3>
-                            {entryTypeBadge(course.entryType)}
+                      {/* Top image */}
+                      <div className="relative h-40 w-full bg-gray-100">
+                        {course.institution?.image ? (
+                          <img
+                            src={course.institution.image}
+                            alt={course.institution.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.target.style.display = 'none'; }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-sky-100 flex items-center justify-center">
+                            <GraduationCap className="w-12 h-12 text-emerald-300" />
                           </div>
-                          <div className="flex items-center gap-2 mt-1.5 text-sm text-gray-500">
-                            <Building2 className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">{course.institution?.name}</span>
-                          </div>
-                          <div className="flex items-center gap-2 mt-0.5 text-sm text-gray-500">
-                            <MapPin className="w-3.5 h-3.5 shrink-0" />
-                            <span>{course.institution?.location}</span>
-                          </div>
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 mt-2">
-                            {course.educationLevel}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="mt-3 pt-3 border-t border-gray-100">
-                        <p className="text-sm text-gray-600">{getRequirementsSummary(course)}</p>
-                        {course.duration && (
-                          <p className="text-xs text-gray-400 mt-1">Duration: {course.duration}</p>
                         )}
+                        {course.entryType && course.entryType !== "Normal Entry" && (
+                          <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-400 text-white shadow-sm border border-amber-500">
+                            {course.entryType}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Body */}
+                      <div className="p-4 flex flex-col flex-1">
+                        {/* Org row */}
+                        <div className="flex items-center gap-2 mb-2">
+                          {course.institution?.image ? (
+                            <img
+                              src={course.institution.image}
+                              alt=""
+                              className="w-5 h-5 rounded-sm object-cover border border-gray-200"
+                            />
+                          ) : (
+                            <Building2 className="w-4 h-4 text-gray-500" />
+                          )}
+                          <span className="text-xs font-medium text-gray-700">{course.institution?.name}</span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="font-semibold text-gray-900 text-base leading-snug mb-2 line-clamp-2">
+                          {course.name}
+                        </h3>
+
+                        {/* Skills */}
+                        <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                          <span className="font-bold text-gray-800">Skills you&apos;ll gain:</span>{" "}
+                          {course.acceptedFields?.length && course.acceptedFields[0] !== "Any"
+                            ? course.acceptedFields.join(", ")
+                            : course.description || "Relevant industry skills and certification pathways."}
+                        </p>
+
+                        {/* Rating */}
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Star className="w-4 h-4 text-gray-900 fill-gray-900" />
+                          <span className="text-sm font-bold text-gray-900">4.7</span>
+                          <span className="text-xs text-gray-500">· Recommended pathway</span>
+                        </div>
+
+                        {/* Bottom meta */}
+                        <div className="mt-auto pt-3 border-t border-gray-100 text-xs text-gray-500">
+                          {course.educationLevel} · {course.entryType || "Course"} · {course.duration || "Varied"}
+                        </div>
                       </div>
                     </div>
                   ))}

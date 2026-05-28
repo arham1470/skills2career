@@ -32,8 +32,8 @@ exports.getInstitution = async (req, res) => {
 
 exports.createInstitution = async (req, res) => {
   try {
-    const { name, location, type, website } = req.body;
-    const institution = await Institution.create({ name, location, type, website });
+    const { name, location, type, website, image } = req.body;
+    const institution = await Institution.create({ name, location, type, website, image });
     res.status(201).json({ success: true, institution });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });

@@ -11,7 +11,7 @@ const ManageInstitutions = () => {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [search, setSearch] = useState("");
-  const [form, setForm] = useState({ name: "", location: "", type: "university", website: "" });
+  const [form, setForm] = useState({ name: "", location: "", type: "university", website: "", image: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const fetchInstitutions = async () => {
@@ -31,13 +31,13 @@ const ManageInstitutions = () => {
 
   const openAdd = () => {
     setEditing(null);
-    setForm({ name: "", location: "", type: "university", website: "" });
+    setForm({ name: "", location: "", type: "university", website: "", image: "" });
     setShowModal(true);
   };
 
   const openEdit = (inst) => {
     setEditing(inst);
-    setForm({ name: inst.name, location: inst.location, type: inst.type, website: inst.website || "" });
+    setForm({ name: inst.name, location: inst.location, type: inst.type, website: inst.website || "", image: inst.image || "" });
     setShowModal(true);
   };
 
@@ -124,8 +124,12 @@ const ManageInstitutions = () => {
               {filtered.map((inst) => (
                 <tr key={inst._id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-gray-400 shrink-0" />
+                    <div className="flex items-center gap-3">
+                      {inst.image ? (
+                        <img src={inst.image} alt={inst.name} className="w-8 h-8 rounded-lg object-cover border border-gray-200 shrink-0" />
+                      ) : (
+                        <Building2 className="w-4 h-4 text-gray-400 shrink-0" />
+                      )}
                       <span className="font-medium text-gray-900">{inst.name}</span>
                     </div>
                   </td>
@@ -216,6 +220,20 @@ const ManageInstitutions = () => {
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
                   placeholder="https://example.com"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL (optional)</label>
+                <input
+                  value={form.image}
+                  onChange={(e) => setForm({ ...form, image: e.target.value })}
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                  placeholder="https://example.com/logo.png"
+                />
+                {form.image && (
+                  <div className="mt-2">
+                    <img src={form.image} alt="Preview" className="w-16 h-16 rounded-lg object-cover border border-gray-200" onError={(e) => e.target.style.display = 'none'} />
+                  </div>
+                )}
               </div>
               <div className="flex gap-3 pt-2">
                 <Button type="button" variant="secondary" onClick={() => setShowModal(false)} className="flex-1">

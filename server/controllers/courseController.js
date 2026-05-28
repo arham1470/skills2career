@@ -9,7 +9,7 @@ exports.getCourses = async (req, res) => {
     if (educationLevel) filter.educationLevel = educationLevel;
 
     const courses = await Course.find(filter)
-      .populate("institution", "name location")
+      .populate("institution", "name location image")
       .sort({ name: 1 });
     res.json({ success: true, courses });
   } catch (error) {
@@ -20,7 +20,7 @@ exports.getCourses = async (req, res) => {
 exports.getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find()
-      .populate("institution", "name location")
+      .populate("institution", "name location image")
       .sort({ createdAt: -1 });
     res.json({ success: true, courses });
   } catch (error) {
@@ -30,7 +30,7 @@ exports.getAllCourses = async (req, res) => {
 
 exports.getCourse = async (req, res) => {
   try {
-    const course = await Course.findById(req.params.id).populate("institution", "name location");
+    const course = await Course.findById(req.params.id).populate("institution", "name location image");
     if (!course) {
       return res.status(404).json({ success: false, message: "Course not found" });
     }
@@ -62,7 +62,7 @@ exports.createCourse = async (req, res) => {
       acceptedQualificationNames,
     });
 
-    const populatedCourse = await Course.findById(course._id).populate("institution", "name location");
+    const populatedCourse = await Course.findById(course._id).populate("institution", "name location image");
     res.status(201).json({ success: true, course: populatedCourse });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -74,7 +74,7 @@ exports.updateCourse = async (req, res) => {
     const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
-    }).populate("institution", "name location");
+    }).populate("institution", "name location image");
 
     if (!course) {
       return res.status(404).json({ success: false, message: "Course not found" });

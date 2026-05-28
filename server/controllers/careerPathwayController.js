@@ -24,7 +24,7 @@ exports.matchCourses = async (req, res) => {
     }
 
     // Query ALL active courses — we filter by eligibility, not by level
-    const courses = await Course.find({ isActive: true }).populate("institution", "name location");
+    const courses = await Course.find({ isActive: true }).populate("institution", "name location image");
 
     const matchedCourses = [];
 
@@ -174,7 +174,7 @@ exports.matchCourses = async (req, res) => {
     let suggestions = [];
     if (matchedCourses.length === 0) {
       suggestions = await Course.find({ isActive: true, educationLevel: "O/L" })
-        .populate("institution", "name location")
+        .populate("institution", "name location image")
         .sort({ educationLevel: 1 })
         .limit(6);
     }
