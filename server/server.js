@@ -23,6 +23,9 @@ const candidateRoutes = require("./routes/candidate");
 const employerRoutes = require("./routes/employer");
 const interviewRoutes = require("./routes/interview");
 const skillsRoutes = require("./routes/skills");
+const institutionRoutes = require("./routes/institution");
+const courseRoutes = require("./routes/course");
+const careerPathwayRoutes = require("./routes/careerPathway");
 
 
 const app = express();
@@ -82,6 +85,9 @@ app.use("/api/candidates", candidateRoutes);
 app.use("/api/employer", employerRoutes);
 app.use("/api/interviews", interviewRoutes);
 app.use("/api/skills", skillsRoutes);
+app.use("/api/institutions", institutionRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/career-pathway", careerPathwayRoutes);
 
 // Error Handling
 app.use(notFound);

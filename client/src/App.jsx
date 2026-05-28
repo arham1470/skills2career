@@ -13,6 +13,8 @@ import Login from "./pages/auth/Login";
 import BrowseInternships from "./pages/BrowseInternships";
 import Chat from "./pages/Chat";
 import ChatInterface from "./components/chat/ChatInterface";
+import CareerPathway from "./pages/CareerPathway";
+import CareerPathwayResults from "./pages/CareerPathwayResults";
 
 // Lazy Loaded Layouts & Heavy Pages
 const SeekerLayout = React.lazy(() => import("./layouts/SeekerLayout"));
@@ -46,6 +48,8 @@ import ManageUsers from "./pages/admin/ManageUsers";
 import AdminManageInternships from "./pages/admin/ManageInternships";
 import VerifyCompanies from "./pages/admin/VerifyCompanies";
 import AdminSettings from "./pages/admin/Settings";
+import ManageInstitutions from "./pages/admin/ManageInstitutions";
+import ManageCourses from "./pages/admin/ManageCourses";
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -65,6 +69,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/internships" element={<BrowseInternships />} />
+            <Route path="/career-pathway" element={<CareerPathway />} />
+            <Route path="/career-pathway/results" element={<CareerPathwayResults />} />
 
             {/* Seeker Routes */}
             <Route element={<ProtectedRoute allowedRoles={["seeker"]} />}>
@@ -90,6 +96,8 @@ function App() {
                 <Route path="users" element={<ManageUsers />} />
                 <Route path="internships" element={<AdminManageInternships />} />
                 <Route path="verify-companies" element={<VerifyCompanies />} />
+                <Route path="institutions" element={<ManageInstitutions />} />
+                <Route path="courses" element={<ManageCourses />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route index element={<Navigate to="dashboard" replace />} />
               </Route>

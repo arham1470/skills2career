@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { GraduationCap, Building2, ArrowRight } from "lucide-react";
+import { GraduationCap, Building2, ArrowRight, BookOpen } from "lucide-react";
 import Button from "../ui/Button";
 
 const Hero = () => {
@@ -76,6 +76,18 @@ const Hero = () => {
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-1 group-hover:text-emerald-700 transition-colors">I am an Employer</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">Post opportunities, filter by skills, and hire pre-qualified talent efficiently.</p>
+                </div>
+              </div>
+            </Link>
+
+            <Link to="/career-pathway" className="group bg-white/95 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 opacity-80">
+              <div className="flex items-start gap-4">
+                <div className="bg-purple-100 p-3 rounded-xl group-hover:bg-purple-600 transition-colors duration-300 shrink-0">
+                  <BookOpen className="w-7 h-7 text-purple-600 group-hover:text-white transition-colors duration-300" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-1 group-hover:text-purple-700 transition-colors">Career Pathway</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">Discover courses and programs you qualify for based on your education.</p>
                 </div>
               </div>
             </Link>

@@ -6,6 +6,8 @@ const CompanyProfile = require("../models/CompanyProfile");
 const SeekerProfile = require("../models/SeekerProfile");
 const Internship = require("../models/Internship");
 const Application = require("../models/Application");
+const Institution = require("../models/Institution");
+const Course = require("../models/Course");
 
 const employers = [
   {
@@ -307,6 +309,102 @@ const seekers = [
   },
 ];
 
+// ============ CAREER PATHWAY SEED DATA ============
+const careerPathwayInstitutions = [
+  { name: "BCAS Campus", location: "Kandy, Sri Lanka", type: "college", website: "https://bcas.lk" },
+  { name: "ESOFT Metro Campus", location: "Colombo, Sri Lanka", type: "institute", website: "https://esoft.lk" },
+  { name: "ICBT Campus", location: "Colombo, Sri Lanka", type: "college", website: "https://icbt.lk" },
+  { name: "SLIIT", location: "Malabe, Sri Lanka", type: "university", website: "https://sliit.lk" },
+  { name: "NSBM Green University", location: "Homagama, Sri Lanka", type: "university", website: "https://nsbm.ac.lk" },
+  { name: "University of Colombo", location: "Colombo, Sri Lanka", type: "university", website: "https://cmb.ac.lk" },
+  { name: "IIT - Informatics Institute of Technology", location: "Colombo, Sri Lanka", type: "institute", website: "https://iit.ac.lk" },
+  { name: "APIIT Sri Lanka", location: "Colombo, Sri Lanka", type: "institute", website: "https://apiit.lk" },
+  { name: "General Sir John Kotelawala Defence University", location: "Ratmalana, Sri Lanka", type: "university", website: "https://kdu.ac.lk" },
+  { name: "Royal Institute Colombo", location: "Colombo, Sri Lanka", type: "institute", website: "https://royalinstitute.org" },
+];
+
+async function seedCareerPathway() {
+  console.log("--- Seeding Career Pathway Data ---\n");
+
+  await Institution.deleteMany({});
+  await Course.deleteMany({});
+  console.log("Cleared existing Career Pathway data.");
+
+  const institutions = await Institution.insertMany(careerPathwayInstitutions);
+  console.log(`Inserted ${institutions.length} institutions.`);
+
+  const courses = [
+    // BCAS Campus (0)
+    { institution: institutions[0]._id, name: "HND in Computing", educationLevel: "A/L", description: "Higher National Diploma in Computing with software development focus.", duration: "2 years", requirements: { alStream: "Any", alPasses: 2, otherRequirements: "Pass in Mathematics at O/L" } },
+    { institution: institutions[0]._id, name: "Diploma in Business Management", educationLevel: "O/L", description: "Foundation diploma in business and management principles.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English"], otherRequirements: "" } },
+    { institution: institutions[0]._id, name: "BSc (Hons) Business Management", educationLevel: "Bachelor", description: "UK degree in business management with 1 year top-up after HND.", duration: "1 year (top-up)", requirements: { gpa: 2.5, requiredField: "Business / Management", otherRequirements: "Completion of HND or equivalent" } },
+    { institution: institutions[0]._id, name: "Foundation in IT", educationLevel: "O/L", description: "Pre-HND foundation course for O/L qualified students.", duration: "6 months", requirements: { olPasses: 5, olMandatorySubjects: ["Mathematics"], otherRequirements: "" } },
+
+    // ESOFT Metro Campus (1)
+    { institution: institutions[1]._id, name: "Level 3 Diploma in Information Technology", educationLevel: "O/L", description: "Entry-level IT diploma for O/L students. Leads to HND.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English"], otherRequirements: "" } },
+    { institution: institutions[1]._id, name: "HND in Software Engineering", educationLevel: "A/L", description: "Software engineering diploma with practical project work.", duration: "2 years", requirements: { alStream: "Any", alPasses: 2, otherRequirements: "O/L Math pass required" } },
+    { institution: institutions[1]._id, name: "Diploma in English", educationLevel: "O/L", description: "Professional English diploma for career advancement.", duration: "6 months", requirements: { olPasses: 6, otherRequirements: "" } },
+    { institution: institutions[1]._id, name: "BSc (Hons) Computer Science", educationLevel: "Bachelor", description: "UK honours degree in computer science.", duration: "3 years", requirements: { gpa: 3.0, requiredField: "IT / Computing", otherRequirements: "A/L with 3 passes or foundation completion" } },
+
+    // ICBT Campus (2)
+    { institution: institutions[2]._id, name: "HND in Business Management", educationLevel: "A/L", description: "Pearson HND in business with marketing and HR modules.", duration: "2 years", requirements: { alStream: "Any", alPasses: 2, otherRequirements: "" } },
+    { institution: institutions[2]._id, name: "Diploma in Network Engineering", educationLevel: "O/L", description: "Cisco and CompTIA aligned networking diploma.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "Science"], otherRequirements: "" } },
+    { institution: institutions[2]._id, name: "BSc (Hons) Information Technology", educationLevel: "Bachelor", description: "UK degree top-up programme after HND completion.", duration: "1 year", requirements: { gpa: 2.5, requiredField: "IT / Computing", otherRequirements: "HND in IT or Computing" } },
+    { institution: institutions[2]._id, name: "Foundation Certificate", educationLevel: "O/L", description: "Pre-university foundation for O/L qualified students.", duration: "8 months", requirements: { olPasses: 5, otherRequirements: "" } },
+
+    // SLIIT (3)
+    { institution: institutions[3]._id, name: "BSc (Hons) in Information Technology", educationLevel: "Bachelor", description: "UGC-approved degree in IT with software engineering specialization.", duration: "4 years", requirements: { gpa: 2.0, requiredField: "IT / Computing", otherRequirements: "3 passes in A/L (any stream) or foundation" } },
+    { institution: institutions[3]._id, name: "BSc (Hons) in Computer Systems & Network Engineering", educationLevel: "Bachelor", description: "Networking and systems engineering degree programme.", duration: "4 years", requirements: { gpa: 2.0, requiredField: "Engineering", otherRequirements: "3 passes in A/L (any stream) or foundation" } },
+    { institution: institutions[3]._id, name: "Foundation in Information Technology", educationLevel: "O/L", description: "SLIIT foundation for O/L qualified students to enter degree.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English", "Science"], otherRequirements: "" } },
+    { institution: institutions[3]._id, name: "MSc in Information Technology", educationLevel: "Bachelor", description: "Postgraduate degree for IT professionals.", duration: "2 years", requirements: { gpa: 3.0, requiredField: "IT / Computing", otherRequirements: "Bachelor's degree in IT/Computing related field" } },
+
+    // NSBM Green University (4)
+    { institution: institutions[4]._id, name: "BSc (Hons) Computer Science", educationLevel: "Bachelor", description: "Computer science degree with AI and data science electives.", duration: "4 years", requirements: { gpa: 2.0, requiredField: "IT / Computing", otherRequirements: "3 passes in A/L (any stream)" } },
+    { institution: institutions[4]._id, name: "BSc (Hons) Software Engineering", educationLevel: "Bachelor", description: "Software engineering degree with industry placement.", duration: "4 years", requirements: { gpa: 2.0, requiredField: "IT / Computing", otherRequirements: "3 passes in A/L (any stream)" } },
+    { institution: institutions[4]._id, name: "Diploma in Management and IT", educationLevel: "O/L", description: "Dual-focus diploma for O/L qualified students.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English"], otherRequirements: "" } },
+    { institution: institutions[4]._id, name: "Foundation in Science and Technology", educationLevel: "O/L", description: "Foundation programme for technology degree pathways.", duration: "1 year", requirements: { olPasses: 5, olMandatorySubjects: ["Mathematics", "Science"], otherRequirements: "" } },
+
+    // University of Colombo (5)
+    { institution: institutions[5]._id, name: "BSc in Information Systems", educationLevel: "Bachelor", description: "Public university degree in information systems.", duration: "3 years", requirements: { gpa: 2.5, requiredField: "IT / Computing", otherRequirements: "Good A/L results + UGC selection" } },
+    { institution: institutions[5]._id, name: "BSc in Physical Science", educationLevel: "Bachelor", description: "Physical science degree with IT specialization.", duration: "3 years", requirements: { gpa: 2.5, requiredField: "Science", otherRequirements: "A/L Science stream with good results" } },
+    { institution: institutions[5]._id, name: "Diploma in Library and Information Science", educationLevel: "A/L", description: "Diploma for A/L qualified students in library science.", duration: "1 year", requirements: { alStream: "Any", alPasses: 3, otherRequirements: "" } },
+    { institution: institutions[5]._id, name: "Certificate in Computer Science", educationLevel: "O/L", description: "Certificate programme for O/L qualified students.", duration: "6 months", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics"], otherRequirements: "" } },
+
+    // IIT (6)
+    { institution: institutions[6]._id, name: "BEng (Hons) Software Engineering", educationLevel: "Bachelor", description: "British Computer Society accredited software engineering degree.", duration: "4 years", requirements: { gpa: 2.5, requiredField: "Engineering", otherRequirements: "3 passes in A/L (any stream) + IIT aptitude test" } },
+    { institution: institutions[6]._id, name: "BSc (Hons) Computer Science", educationLevel: "Bachelor", description: "Computer science degree with cybersecurity specialization.", duration: "4 years", requirements: { gpa: 2.5, requiredField: "IT / Computing", otherRequirements: "3 passes in A/L (any stream)" } },
+    { institution: institutions[6]._id, name: "Foundation Certificate in Higher Education", educationLevel: "O/L", description: "Foundation for O/L students to enter IIT degree programmes.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English"], otherRequirements: "" } },
+    { institution: institutions[6]._id, name: "HND in Computing", educationLevel: "A/L", description: "Pearson HND in computing programme.", duration: "2 years", requirements: { alStream: "Any", alPasses: 2, otherRequirements: "" } },
+
+    // APIIT Sri Lanka (7)
+    { institution: institutions[7]._id, name: "BSc (Hons) Computer Science", educationLevel: "Bachelor", description: "Staffordshire University UK degree in computer science.", duration: "3 years", requirements: { gpa: 2.5, requiredField: "IT / Computing", otherRequirements: "3 passes in A/L (any stream) or APIIT foundation" } },
+    { institution: institutions[7]._id, name: "BSc (Hons) Software Engineering", educationLevel: "Bachelor", description: "Software engineering degree with mobile app development focus.", duration: "3 years", requirements: { gpa: 2.5, requiredField: "IT / Computing", otherRequirements: "3 passes in A/L (any stream) or APIIT foundation" } },
+    { institution: institutions[7]._id, name: "Foundation in IT", educationLevel: "O/L", description: "Foundation programme for O/L students.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English"], otherRequirements: "" } },
+    { institution: institutions[7]._id, name: "Diploma in Business Administration", educationLevel: "O/L", description: "Business diploma for O/L qualified students.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English"], otherRequirements: "" } },
+
+    // KDU (8)
+    { institution: institutions[8]._id, name: "BSc in Defence and Strategic Studies", educationLevel: "Bachelor", description: "Defence university degree with IT components.", duration: "3 years", requirements: { gpa: 2.0, requiredField: "Any", otherRequirements: "3 passes in A/L + defence clearance" } },
+    { institution: institutions[8]._id, name: "BSc in Management and Information Technology", educationLevel: "Bachelor", description: "Management and IT combined degree programme.", duration: "4 years", requirements: { gpa: 2.0, requiredField: "Any", otherRequirements: "3 passes in A/L (any stream)" } },
+    { institution: institutions[8]._id, name: "Diploma in Logistics Management", educationLevel: "A/L", description: "Logistics diploma for A/L qualified students.", duration: "1 year", requirements: { alStream: "Any", alPasses: 2, otherRequirements: "" } },
+    { institution: institutions[8]._id, name: "Certificate in IT Fundamentals", educationLevel: "O/L", description: "IT certificate for O/L qualified students.", duration: "6 months", requirements: { olPasses: 5, otherRequirements: "" } },
+
+    // Royal Institute Colombo (9)
+    { institution: institutions[9]._id, name: "Diploma in Accounting and Finance", educationLevel: "O/L", description: "Accounting diploma for O/L qualified students.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "Commerce"], otherRequirements: "" } },
+    { institution: institutions[9]._id, name: "HND in Business", educationLevel: "A/L", description: "Business HND for A/L qualified students.", duration: "2 years", requirements: { alStream: "Commerce", alPasses: 2, otherRequirements: "" } },
+    { institution: institutions[9]._id, name: "BSc in Business Management", educationLevel: "Bachelor", description: "Business management degree programme.", duration: "3 years", requirements: { gpa: 2.0, requiredField: "Business / Management", otherRequirements: "A/L 3 passes or HND completion" } },
+    { institution: institutions[9]._id, name: "Foundation in Business", educationLevel: "O/L", description: "Foundation programme for business degree entry.", duration: "1 year", requirements: { olPasses: 6, olMandatorySubjects: ["Mathematics", "English"], otherRequirements: "" } },
+  ];
+
+  await Course.insertMany(courses);
+  console.log(`Inserted ${courses.length} courses.\n`);
+  console.log("Career Pathway test scenarios:");
+  console.log("- O/L with 6 passes + Math + English: ~14 courses");
+  console.log("- A/L with 2 passes (Any stream): ~8 courses");
+  console.log("- A/L Commerce stream with 2 passes: ~9 courses");
+  console.log("- Bachelor with GPA 2.5+: ~10 courses\n");
+}
+
+// ============ MAIN SEED ============
 async function seed() {
   await connectDB();
   console.log("Starting seed...\n");
@@ -373,6 +471,9 @@ async function seed() {
     }
     console.log("");
   }
+
+  // Seed Career Pathway data
+  await seedCareerPathway();
 
   console.log("Seed complete!");
   console.log("\n--- Test Credentials ---");

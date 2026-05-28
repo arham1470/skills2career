@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Users, Briefcase, Settings, Menu, X, LogOut, ShieldCheck, ShieldAlert, ChevronRight, Home, Edit2, BadgeCheck } from "lucide-react";
+import { LayoutDashboard, Users, Briefcase, Settings, Menu, X, LogOut, ShieldCheck, ShieldAlert, ChevronRight, Home, Edit2, BadgeCheck, Building2, BookOpen } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/ui/Button";
 import ConfirmModal from "../components/ui/ConfirmModal";
@@ -21,6 +21,8 @@ const AdminLayout = () => {
     { label: "Manage Users", path: "/admin/users", icon: Users },
     { label: "Moderate Internships", path: "/admin/internships", icon: Briefcase },
     { label: "Verify Companies", path: "/admin/verify-companies", icon: ShieldAlert },
+    { label: "Institutions", path: "/admin/institutions", icon: Building2 },
+    { label: "Courses", path: "/admin/courses", icon: BookOpen },
     { label: "Settings", path: "/admin/settings", icon: Settings },
   ];
 
