@@ -25,6 +25,27 @@ const courseSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    // Entry pathway type — critical for HND/Bachelor audiences
+    entryType: {
+      type: String,
+      enum: ["Normal Entry", "Top-Up", "Final Year Entry", "Direct Entry"],
+      default: "Normal Entry",
+    },
+    // Flexible field acceptance (replaces strict requiredField equality)
+    acceptedFields: {
+      type: [String],
+      default: ["Any"],
+    },
+    // What prior qualification types this course accepts (e.g., ["HND", "Diploma"])
+    acceptedQualificationTypes: {
+      type: [String],
+      default: [],
+    },
+    // What specific qualification names this course accepts (e.g., ["Pearson HND", "SLIATE HND"])
+    acceptedQualificationNames: {
+      type: [String],
+      default: [],
+    },
     // Requirements based on education level
     requirements: {
       // For O/L level courses

@@ -4,7 +4,7 @@ import { BookOpen, GraduationCap, ArrowRight, ChevronDown, CheckCircle2, Loader2
 import api from "../utils/api";
 import Button from "../components/ui/Button";
 
-const educationLevels = [
+const currentQualifications = [
   { value: "O/L", label: "O/L (Ordinary Level)", icon: GraduationCap },
   { value: "A/L", label: "A/L (Advanced Level)", icon: GraduationCap },
   { value: "Diploma", label: "Diploma", icon: BookOpen },
@@ -31,18 +31,30 @@ const fieldsOfStudy = [
   "Hospitality / Tourism",
 ];
 
+const commonQualificationNames = [
+  "Pearson HND",
+  "SLIATE HND",
+  "NIBM Diploma",
+  "ESOFT Diploma",
+  "BCAS Diploma",
+  "General Bachelor's Degree",
+  "Honours Bachelor's Degree",
+  "Foundation Certificate",
+];
+
 const CareerPathway = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    educationLevel: "",
+    currentQualification: "",
     olPasses: "",
     olMandatorySubjects: [],
     alStream: "",
     alPasses: "",
     gpa: "",
     fieldOfStudy: "",
+    qualificationName: "",
   });
 
   const handleChange = (field, value) => {
@@ -65,22 +77,23 @@ const CareerPathway = () => {
     setLoading(true);
     try {
       const payload = {
-        educationLevel: formData.educationLevel,
+        currentQualification: formData.currentQualification,
       };
 
-      if (formData.educationLevel === "O/L") {
+      if (formData.currentQualification === "O/L") {
         payload.olPasses = formData.olPasses ? parseInt(formData.olPasses) : null;
         payload.olMandatorySubjects = formData.olMandatorySubjects;
-      } else if (formData.educationLevel === "A/L") {
+      } else if (formData.currentQualification === "A/L") {
         payload.alStream = formData.alStream;
         payload.alPasses = formData.alPasses ? parseInt(formData.alPasses) : null;
       } else {
         payload.gpa = formData.gpa ? parseFloat(formData.gpa) : null;
         payload.fieldOfStudy = formData.fieldOfStudy || "Any";
+        payload.qualificationName = formData.qualificationName || "";
       }
 
       const res = await api.post("/career-pathway/match", payload);
-      navigate("/career-pathway/results", { state: { results: res.data.courses, formData } });
+      navigate("/career-pathway/results", { state: { results: res.data.courses, suggestions: res.data.suggestions, formData } });
     } catch (error) {
       console.error("Failed to match courses:", error);
     } finally {
@@ -89,11 +102,11 @@ const CareerPathway = () => {
   };
 
   const isStepValid = () => {
-    if (!formData.educationLevel) return false;
-    if (formData.educationLevel === "O/L") {
+    if (!formData.currentQualification) return false;
+    if (formData.currentQualification === "O/L") {
       return formData.olPasses !== "";
     }
-    if (formData.educationLevel === "A/L") {
+    if (formData.currentQualification === "A/L") {
       return formData.alStream !== "" && formData.alPasses !== "";
     }
     return formData.fieldOfStudy !== "";
@@ -120,27 +133,27 @@ const CareerPathway = () => {
         {/* Step 1: Select Education Level */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${formData.educationLevel ? "bg-emerald-100 text-emerald-700" : "bg-primary-100 text-primary-700"}`}>
-              {formData.educationLevel ? <CheckCircle2 className="w-4 h-4" /> : "1"}
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${formData.currentQualification ? "bg-emerald-100 text-emerald-700" : "bg-primary-100 text-primary-700"}`}>
+              {formData.currentQualification ? <CheckCircle2 className="w-4 h-4" /> : "1"}
             </div>
-            <h2 className="text-lg font-semibold text-gray-900">Select Your Education Level</h2>
+            <h2 className="text-lg font-semibold text-gray-900">What qualification do you currently hold?</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {educationLevels.map((level) => (
+            {currentQualifications.map((level) => (
               <button
                 key={level.value}
-                onClick={() => handleChange("educationLevel", level.value)}
+                onClick={() => handleChange("currentQualification", level.value)}
                 className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left ${
-                  formData.educationLevel === level.value
+                  formData.currentQualification === level.value
                     ? "border-primary-500 bg-primary-50/50"
                     : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                 }`}
               >
-                <div className={`p-2 rounded-lg ${formData.educationLevel === level.value ? "bg-primary-100" : "bg-gray-100"}`}>
-                  <level.icon className={`w-5 h-5 ${formData.educationLevel === level.value ? "text-primary-600" : "text-gray-500"}`} />
+                <div className={`p-2 rounded-lg ${formData.currentQualification === level.value ? "bg-primary-100" : "bg-gray-100"}`}>
+                  <level.icon className={`w-5 h-5 ${formData.currentQualification === level.value ? "text-primary-600" : "text-gray-500"}`} />
                 </div>
-                <span className={`font-medium ${formData.educationLevel === level.value ? "text-primary-900" : "text-gray-700"}`}>
+                <span className={`font-medium ${formData.currentQualification === level.value ? "text-primary-900" : "text-gray-700"}`}>
                   {level.label}
                 </span>
               </button>
@@ -149,7 +162,7 @@ const CareerPathway = () => {
         </div>
 
         {/* Step 2: Enter Details */}
-        {formData.educationLevel && (
+        {formData.currentQualification && (
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-6 animate-fade-up">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold">2</div>
@@ -157,7 +170,7 @@ const CareerPathway = () => {
             </div>
 
             {/* O/L Fields */}
-            {formData.educationLevel === "O/L" && (
+            {formData.currentQualification === "O/L" && (
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Number of O/L Passes</label>
@@ -195,7 +208,7 @@ const CareerPathway = () => {
             )}
 
             {/* A/L Fields */}
-            {formData.educationLevel === "A/L" && (
+            {formData.currentQualification === "A/L" && (
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">A/L Stream</label>
@@ -226,21 +239,26 @@ const CareerPathway = () => {
               </div>
             )}
 
-            {/* HND / Bachelor / Diploma Fields */}
-            {["HND", "Bachelor", "Diploma"].includes(formData.educationLevel) && (
+            {/* Higher Education Fields (Diploma / HND / Bachelor) */}
+            {["Diploma", "HND", "Bachelor"].includes(formData.currentQualification) && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">GPA (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Qualification Name (Optional)</label>
                   <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="4"
-                    value={formData.gpa}
-                    onChange={(e) => handleChange("gpa", e.target.value)}
-                    placeholder="Leave blank if not sure, or enter your GPA"
+                    list="qualification-names"
+                    value={formData.qualificationName}
+                    onChange={(e) => handleChange("qualificationName", e.target.value)}
+                    placeholder="e.g., Pearson HND, SLIATE HND, NIBM Diploma"
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
                   />
+                  <datalist id="qualification-names">
+                    {commonQualificationNames.map((name) => (
+                      <option key={name} value={name} />
+                    ))}
+                  </datalist>
+                  <p className="text-xs text-gray-400 mt-2">
+                    Enter the specific qualification name if known. This improves match accuracy.
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">Field of Study</label>
@@ -254,9 +272,19 @@ const CareerPathway = () => {
                       <option key={field} value={field}>{field}</option>
                     ))}
                   </select>
-                  <p className="text-xs text-gray-400 mt-2">
-                    Select the field of your {formData.educationLevel}. This helps match courses that require a specific background.
-                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">GPA (Optional)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="4"
+                    value={formData.gpa}
+                    onChange={(e) => handleChange("gpa", e.target.value)}
+                    placeholder="Leave blank if not sure, or enter your GPA"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                  />
                 </div>
               </div>
             )}
@@ -264,7 +292,7 @@ const CareerPathway = () => {
         )}
 
         {/* Submit */}
-        {formData.educationLevel && (
+        {formData.currentQualification && (
           <div className="flex justify-end">
             <Button
               variant="primary"

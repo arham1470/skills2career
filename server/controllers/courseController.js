@@ -42,7 +42,7 @@ exports.getCourse = async (req, res) => {
 
 exports.createCourse = async (req, res) => {
   try {
-    const { name, institution, educationLevel, description, duration, requirements } = req.body;
+    const { name, institution, educationLevel, description, duration, requirements, entryType, acceptedFields, acceptedQualificationTypes, acceptedQualificationNames } = req.body;
     
     const institutionExists = await Institution.findById(institution);
     if (!institutionExists) {
@@ -56,6 +56,10 @@ exports.createCourse = async (req, res) => {
       description,
       duration,
       requirements,
+      entryType,
+      acceptedFields,
+      acceptedQualificationTypes,
+      acceptedQualificationNames,
     });
 
     const populatedCourse = await Course.findById(course._id).populate("institution", "name location");

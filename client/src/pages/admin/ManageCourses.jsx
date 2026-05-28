@@ -22,6 +22,21 @@ const fieldsOfStudy = [
   "Hospitality / Tourism",
 ];
 
+const entryTypes = ["Normal Entry", "Top-Up", "Final Year Entry", "Direct Entry"];
+
+const qualificationTypes = ["O/L", "A/L", "Diploma", "HND", "Bachelor"];
+
+const commonQualificationNames = [
+  "Pearson HND",
+  "SLIATE HND",
+  "NIBM Diploma",
+  "ESOFT Diploma",
+  "BCAS Diploma",
+  "General Bachelor's Degree",
+  "Honours Bachelor's Degree",
+  "Foundation Certificate",
+];
+
 const ManageCourses = () => {
   const [courses, setCourses] = useState([]);
   const [institutions, setInstitutions] = useState([]);
@@ -35,7 +50,11 @@ const ManageCourses = () => {
     educationLevel: "O/L",
     description: "",
     duration: "",
-    requirements: { olPasses: "", olMandatorySubjects: [], alStream: "", alPasses: "", gpa: "", otherRequirements: "" },
+    requirements: { olPasses: "", olMandatorySubjects: [], alStream: "", alPasses: "", gpa: "", requiredField: "Any", otherRequirements: "" },
+    entryType: "Normal Entry",
+    acceptedFields: ["Any"],
+    acceptedQualificationTypes: [],
+    acceptedQualificationNames: [],
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -88,6 +107,10 @@ const ManageCourses = () => {
         requiredField: course.requirements?.requiredField || "Any",
         otherRequirements: course.requirements?.otherRequirements || "",
       },
+      entryType: course.entryType || "Normal Entry",
+      acceptedFields: course.acceptedFields || ["Any"],
+      acceptedQualificationTypes: course.acceptedQualificationTypes || [],
+      acceptedQualificationNames: course.acceptedQualificationNames || [],
     });
     setShowModal(true);
   };
@@ -127,6 +150,10 @@ const ManageCourses = () => {
           gpa: form.requirements.gpa ? parseFloat(form.requirements.gpa) : null,
         },
       };
+      // Ensure arrays are sent even if empty
+      payload.acceptedFields = form.acceptedFields || ["Any"];
+      payload.acceptedQualificationTypes = form.acceptedQualificationTypes || [];
+      payload.acceptedQualificationNames = form.acceptedQualificationNames || [];
 
       if (editing) {
         await api.put(`/courses/${editing._id}`, payload);
@@ -256,39 +283,39 @@ const ManageCourses = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-fade-up my-8">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-fade-up my-8 max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <h2 className="text-lg font-semibold text-gray-900">{editing ? "Edit Course" : "Add Course"}</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
-                <input
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  placeholder="e.g. BSc Computer Science"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Institution</label>
-                <select
-                  required
-                  value={form.institution}
-                  onChange={(e) => setForm({ ...form, institution: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                >
-                  <option value="">Select institution</option>
-                  {institutions.map((inst) => (
-                    <option key={inst._id} value={inst._id}>{inst.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Course Name</label>
+                  <input
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                    placeholder="e.g. BSc Computer Science"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Institution</label>
+                  <select
+                    required
+                    value={form.institution}
+                    onChange={(e) => setForm({ ...form, institution: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                  >
+                    <option value="">Select institution</option>
+                    {institutions.map((inst) => (
+                      <option key={inst._id} value={inst._id}>{inst.name}</option>
+                    ))}
+                  </select>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Education Level</label>
                   <select
@@ -310,129 +337,225 @@ const ManageCourses = () => {
                     placeholder="e.g. 3 years"
                   />
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea
-                  value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  rows={2}
-                  placeholder="Brief description of the course"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Entry Type</label>
+                  <select
+                    value={form.entryType}
+                    onChange={(e) => setForm((prev) => ({ ...prev, entryType: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                  >
+                    {entryTypes.map((et) => (
+                      <option key={et} value={et}>{et}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                  <textarea
+                    value={form.description}
+                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                    rows={2}
+                    placeholder="Brief description of the course"
+                  />
+                </div>
               </div>
 
               {/* Requirements based on education level */}
               <div className="border-t border-gray-100 pt-4">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">Requirements</h3>
 
-                {form.educationLevel === "O/L" && (
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Min O/L Passes Required</label>
-                      <select
-                        value={form.requirements.olPasses}
-                        onChange={(e) => handleReqChange("olPasses", e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
-                      >
-                        <option value="">Any</option>
-                        {[...Array(10)].map((_, i) => (
-                          <option key={i} value={i}>{i} passes</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1.5">Mandatory Subjects</label>
-                      <div className="flex flex-wrap gap-1.5">
-                        {olSubjects.map((sub) => (
-                          <button
-                            key={sub}
-                            type="button"
-                            onClick={() => toggleSubject(sub)}
-                            className={`px-2 py-1 rounded-md text-xs font-medium transition-all ${
-                              form.requirements.olMandatorySubjects.includes(sub)
-                                ? "bg-primary-100 text-primary-700 border border-primary-300"
-                                : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200"
-                            }`}
-                          >
-                            {sub}
-                          </button>
-                        ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {form.educationLevel === "O/L" && (
+                    <>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Min O/L Passes Required</label>
+                        <select
+                          value={form.requirements.olPasses}
+                          onChange={(e) => handleReqChange("olPasses", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
+                        >
+                          <option value="">Any</option>
+                          {[...Array(10)].map((_, i) => (
+                            <option key={i} value={i}>{i} passes</option>
+                          ))}
+                        </select>
                       </div>
-                    </div>
-                  </div>
-                )}
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-medium text-gray-600 mb-1.5">Mandatory Subjects</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {olSubjects.map((sub) => (
+                            <button
+                              key={sub}
+                              type="button"
+                              onClick={() => toggleSubject(sub)}
+                              className={`px-2 py-1 rounded-md text-xs font-medium transition-all ${
+                                form.requirements.olMandatorySubjects.includes(sub)
+                                  ? "bg-primary-100 text-primary-700 border border-primary-300"
+                                  : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200"
+                              }`}
+                            >
+                              {sub}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
 
-                {form.educationLevel === "A/L" && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Required Stream</label>
-                      <select
-                        value={form.requirements.alStream}
-                        onChange={(e) => handleReqChange("alStream", e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
-                      >
-                        <option value="">Any</option>
-                        {alStreams.map((s) => (
-                          <option key={s} value={s}>{s}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Min A/L Passes</label>
-                      <select
-                        value={form.requirements.alPasses}
-                        onChange={(e) => handleReqChange("alPasses", e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
-                      >
-                        <option value="">Any</option>
-                        {[0, 1, 2, 3, 4].map((n) => (
-                          <option key={n} value={n}>{n} passes</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                )}
+                  {form.educationLevel === "A/L" && (
+                    <>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Required Stream</label>
+                        <select
+                          value={form.requirements.alStream}
+                          onChange={(e) => handleReqChange("alStream", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
+                        >
+                          <option value="">Any</option>
+                          {alStreams.map((s) => (
+                            <option key={s} value={s}>{s}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Min A/L Passes</label>
+                        <select
+                          value={form.requirements.alPasses}
+                          onChange={(e) => handleReqChange("alPasses", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
+                        >
+                          <option value="">Any</option>
+                          {[0, 1, 2, 3, 4].map((n) => (
+                            <option key={n} value={n}>{n} passes</option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )}
 
-                {["HND", "Bachelor", "Diploma"].includes(form.educationLevel) && (
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Min GPA Required</label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="4"
-                        value={form.requirements.gpa}
-                        onChange={(e) => handleReqChange("gpa", e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
-                        placeholder="e.g. 2.5"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1">Required Field of Study</label>
-                      <select
-                        value={form.requirements.requiredField}
-                        onChange={(e) => handleReqChange("requiredField", e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
-                      >
-                        {fieldsOfStudy.map((f) => (
-                          <option key={f} value={f}>{f}</option>
-                        ))}
-                      </select>
-                      <p className="text-[10px] text-gray-400 mt-1">Select "Any" if no specific field is required</p>
-                    </div>
-                  </div>
-                )}
+                  {["HND", "Bachelor", "Diploma"].includes(form.educationLevel) && (
+                    <>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Accepted Qualification Types</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {qualificationTypes.map((q) => (
+                            <button
+                              key={q}
+                              type="button"
+                              onClick={() => {
+                                setForm((prev) => {
+                                  const exists = prev.acceptedQualificationTypes.includes(q);
+                                  return {
+                                    ...prev,
+                                    acceptedQualificationTypes: exists
+                                      ? prev.acceptedQualificationTypes.filter((x) => x !== q)
+                                      : [...prev.acceptedQualificationTypes, q],
+                                  };
+                                });
+                              }}
+                              className={`px-2 py-1 rounded-md text-xs font-medium transition-all ${
+                                form.acceptedQualificationTypes.includes(q)
+                                  ? "bg-primary-100 text-primary-700 border border-primary-300"
+                                  : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200"
+                              }`}
+                            >
+                              {q}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-1">Leave empty to accept any</p>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Min GPA Required</label>
+                        <input
+                          type="number"
+                          step="0.1"
+                          min="0"
+                          max="4"
+                          value={form.requirements.gpa}
+                          onChange={(e) => handleReqChange("gpa", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
+                          placeholder="e.g. 2.5"
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Accepted Fields</label>
+                        <div className="flex flex-wrap gap-1.5">
+                          {fieldsOfStudy.map((f) => (
+                            <button
+                              key={f}
+                              type="button"
+                              onClick={() => {
+                                setForm((prev) => {
+                                  const exists = prev.acceptedFields.includes(f);
+                                  return {
+                                    ...prev,
+                                    acceptedFields: exists
+                                      ? prev.acceptedFields.filter((x) => x !== f)
+                                      : [...prev.acceptedFields, f],
+                                  };
+                                });
+                              }}
+                              className={`px-2 py-1 rounded-md text-xs font-medium transition-all ${
+                                form.acceptedFields.includes(f)
+                                  ? "bg-primary-100 text-primary-700 border border-primary-300"
+                                  : "bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200"
+                              }`}
+                            >
+                              {f}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-1">Which prior fields are accepted. Include "Any" for open access.</p>
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Accepted Qualification Names (Optional)</label>
+                        <input
+                          list="admin-qual-names"
+                          value={form.acceptedQualificationNames.join(", ")}
+                          onChange={(e) => {
+                            const vals = e.target.value
+                              .split(",")
+                              .map((s) => s.trim())
+                              .filter(Boolean);
+                            setForm((prev) => ({ ...prev, acceptedQualificationNames: vals }));
+                          }}
+                          placeholder="e.g., Pearson HND, SLIATE HND"
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
+                        />
+                        <datalist id="admin-qual-names">
+                          {commonQualificationNames.map((n) => (
+                            <option key={n} value={n} />
+                          ))}
+                        </datalist>
+                        <p className="text-[10px] text-gray-400 mt-1">Comma-separated. Leave empty to accept any named qualification.</p>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Required Field of Study (Legacy)</label>
+                        <select
+                          value={form.requirements.requiredField}
+                          onChange={(e) => handleReqChange("requiredField", e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
+                        >
+                          {fieldsOfStudy.map((f) => (
+                            <option key={f} value={f}>{f}</option>
+                          ))}
+                        </select>
+                        <p className="text-[10px] text-gray-400 mt-1">Fallback if Accepted Fields is not set</p>
+                      </div>
+                    </>
+                  )}
 
-                <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Other Requirements</label>
-                  <input
-                    value={form.requirements.otherRequirements}
-                    onChange={(e) => handleReqChange("otherRequirements", e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
-                    placeholder="Any additional requirements"
-                  />
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Other Requirements</label>
+                    <input
+                      value={form.requirements.otherRequirements}
+                      onChange={(e) => handleReqChange("otherRequirements", e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 outline-none transition-all text-sm"
+                      placeholder="Any additional requirements"
+                    />
+                  </div>
                 </div>
               </div>
 
