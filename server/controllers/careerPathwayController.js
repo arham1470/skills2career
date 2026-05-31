@@ -27,8 +27,17 @@ exports.matchCourses = async (req, res) => {
     const courses = await Course.find({ isActive: true }).populate("institution", "name location image");
 
     const matchedCourses = [];
+    const levelOrder = { "Bachelor": 4, "HND": 3, "Diploma": 2, "A/L": 1, "O/L": 0 };
+    const userLevel = levelOrder[currentQualification] ?? 0;
 
     for (const course of courses) {
+      const courseLevel = levelOrder[course.educationLevel] ?? 0;
+      
+      // Strict Progression Rule: Only show courses that are a higher level than the user's current qualification
+      if (courseLevel <= userLevel) {
+        continue;
+      }
+
       const req = course.requirements || {};
       const reasons = [];
       let isMatch = true;
