@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, GraduationCap, ArrowRight, CheckCircle2, Loader2, Building2, Check, Sparkles, ChevronDown, Pencil } from "lucide-react";
+import { BookOpen, GraduationCap, ArrowRight, CheckCircle2, Loader2, Building2, Check, Sparkles, ChevronDown, Pencil, ArrowLeft } from "lucide-react";
 import api from "../utils/api";
 import Button from "../components/ui/Button";
 import CustomSelect from "../components/ui/CustomSelect";
@@ -162,8 +162,17 @@ const CareerPathway = () => {
 
       {/* Immersive Hero Header */}
       <div className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-indigo-900 overflow-hidden shadow-lg pb-16 pt-16 z-10">
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px]" />
+        <div 
+          className="absolute inset-0 opacity-70 mix-blend-overlay bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=2070')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-900/90 to-transparent" />
         <div className="max-w-6xl mx-auto px-4 relative z-10">
+          <div className="flex justify-start w-full mb-4">
+            <button onClick={() => navigate("/")} className="inline-flex items-center gap-2 text-primary-200 hover:text-white transition-colors text-sm font-medium bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md border border-white/10">
+              <ArrowLeft className="w-4 h-4" /> Back to Home
+            </button>
+          </div>
           <div className="flex flex-col items-center text-center">
             <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl mb-6 shadow-xl border border-white/20">
               <BookOpen className="w-8 h-8 text-white" />

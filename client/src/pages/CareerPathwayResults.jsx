@@ -56,7 +56,11 @@ const CareerPathwayResults = () => {
 
       {/* Immersive Hero Header */}
       <div className="relative bg-gradient-to-br from-primary-900 via-primary-800 to-indigo-900 overflow-hidden shadow-lg pb-16 pt-12 z-10">
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(circle_at_center,_white_1px,_transparent_1px)] bg-[length:24px_24px]" />
+        <div 
+          className="absolute inset-0 opacity-70 mix-blend-overlay bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=2070')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-900/90 to-transparent" />
         
         <div className="max-w-6xl mx-auto px-4 relative z-10">
           <button onClick={() => navigate("/career-pathway")} className="inline-flex items-center gap-2 text-primary-200 hover:text-white mb-6 transition-colors text-sm font-medium bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md border border-white/10">
