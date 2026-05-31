@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
-import { BookOpen, Building2, ArrowLeft, GraduationCap, AlertCircle, Lightbulb, Filter, Star, SearchX } from "lucide-react";
+import { BookOpen, Building2, ArrowLeft, GraduationCap, AlertCircle, Lightbulb, Filter, Star, SearchX, X, MapPin, Clock, Award, CheckCircle, ListChecks } from "lucide-react";
 import Button from "../components/ui/Button";
 
 const CareerPathwayResults = () => {
@@ -8,6 +8,7 @@ const CareerPathwayResults = () => {
   const navigate = useNavigate();
   const { results = [], suggestions = [], formData = {} } = location.state || {};
   const [showAllLevels, setShowAllLevels] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   // Determine which levels are "next step" (higher than current qualification)
   const currentLevel = formData.currentQualification || "";
@@ -126,7 +127,8 @@ const CareerPathwayResults = () => {
                   {groupedResults[level].map((course) => (
                     <div
                       key={course._id}
-                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col h-full"
+                      onClick={() => setSelectedCourse(course)}
+                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col h-full cursor-pointer"
                     >
                       {/* Top image */}
                       <div className="relative h-40 w-full bg-gray-100">
@@ -247,7 +249,8 @@ const CareerPathwayResults = () => {
                   {suggestions.map((course) => (
                     <div
                       key={course._id}
-                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col h-full"
+                      onClick={() => setSelectedCourse(course)}
+                      className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col h-full cursor-pointer"
                     >
                       {/* Top image */}
                       <div className="relative h-40 w-full bg-gray-100">
@@ -319,6 +322,202 @@ const CareerPathwayResults = () => {
           </div>
         )}
       </div>
+
+      {/* Course Detail Modal */}
+      {selectedCourse && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelectedCourse(null);
+          }}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+            {/* Modal header image */}
+            <div className="relative h-52 w-full bg-gray-100 rounded-t-2xl overflow-hidden">
+              {selectedCourse.institution?.image ? (
+                <img
+                  src={selectedCourse.institution.image}
+                  alt={selectedCourse.institution.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-emerald-100 to-sky-100 flex items-center justify-center">
+                  <GraduationCap className="w-16 h-16 text-emerald-300" />
+                </div>
+              )}
+              <button
+                onClick={() => setSelectedCourse(null)}
+                className="absolute top-4 right-4 bg-white/90 hover:bg-white text-gray-700 rounded-full p-2 shadow transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 md:p-8 space-y-6">
+              {/* Title + institution */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  {selectedCourse.institution?.image ? (
+                    <img
+                      src={selectedCourse.institution.image}
+                      alt=""
+                      className="w-5 h-5 rounded-sm object-cover border border-gray-200"
+                    />
+                  ) : (
+                    <Building2 className="w-4 h-4 text-gray-500" />
+                  )}
+                  <span className="text-sm font-medium text-gray-700">{selectedCourse.institution?.name}</span>
+                  {selectedCourse.institution?.location && (
+                    <span className="flex items-center gap-1 text-xs text-gray-500 ml-1">
+                      <MapPin className="w-3 h-3" /> {selectedCourse.institution.location}
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">{selectedCourse.name}</h2>
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-primary-100 text-primary-800 border border-primary-200">
+                    {selectedCourse.educationLevel}
+                  </span>
+                  {selectedCourse.entryType && selectedCourse.entryType !== "Normal Entry" && (
+                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
+                      {selectedCourse.entryType}
+                    </span>
+                  )}
+                  {selectedCourse.duration && (
+                    <span className="flex items-center gap-1 text-xs text-gray-600">
+                      <Clock className="w-3.5 h-3.5" /> {selectedCourse.duration}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Description */}
+              {selectedCourse.description && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-1">About this course</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{selectedCourse.description}</p>
+                </div>
+              )}
+
+              {/* Skills / Accepted fields */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <Award className="w-4 h-4 text-primary-600" /> Skills / Accepted Fields
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedCourse.acceptedFields?.length && selectedCourse.acceptedFields[0] !== "Any"
+                    ? selectedCourse.acceptedFields.map((f) => (
+                        <span key={f} className="px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                          {f}
+                        </span>
+                      ))
+                    : <span className="text-sm text-gray-600">Any field accepted</span>
+                  }
+                </div>
+              </div>
+
+              {/* Requirements */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <ListChecks className="w-4 h-4 text-primary-600" /> Entry Requirements
+                </h3>
+                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 space-y-2">
+                  {selectedCourse.requirements?.olPasses != null && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>{selectedCourse.requirements.olPasses}+ O/L passes required</span>
+                    </div>
+                  )}
+                  {selectedCourse.requirements?.olMandatorySubjects?.length > 0 && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>Mandatory subjects: {selectedCourse.requirements.olMandatorySubjects.join(", ")}</span>
+                    </div>
+                  )}
+                  {selectedCourse.requirements?.alStream && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>A/L Stream: {selectedCourse.requirements.alStream}</span>
+                    </div>
+                  )}
+                  {selectedCourse.requirements?.alPasses != null && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>{selectedCourse.requirements.alPasses}+ A/L passes required</span>
+                    </div>
+                  )}
+                  {selectedCourse.requirements?.gpa != null && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>Minimum GPA: {selectedCourse.requirements.gpa}</span>
+                    </div>
+                  )}
+                  {selectedCourse.requirements?.requiredField && selectedCourse.requirements.requiredField !== "Any" && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>Required field: {selectedCourse.requirements.requiredField}</span>
+                    </div>
+                  )}
+                  {selectedCourse.requirements?.otherRequirements && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>{selectedCourse.requirements.otherRequirements}</span>
+                    </div>
+                  )}
+                  {selectedCourse.acceptedQualificationTypes?.length > 0 && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>Accepted qualifications: {selectedCourse.acceptedQualificationTypes.join(", ")}</span>
+                    </div>
+                  )}
+                  {selectedCourse.acceptedQualificationNames?.length > 0 && (
+                    <div className="flex items-start gap-2 text-sm text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                      <span>Recognized qualification names: {selectedCourse.acceptedQualificationNames.join(", ")}</span>
+                    </div>
+                  )}
+                  {!selectedCourse.requirements?.olPasses &&
+                   !selectedCourse.requirements?.olMandatorySubjects?.length &&
+                   !selectedCourse.requirements?.alStream &&
+                   !selectedCourse.requirements?.alPasses &&
+                   !selectedCourse.requirements?.gpa &&
+                   !selectedCourse.requirements?.requiredField &&
+                   !selectedCourse.requirements?.otherRequirements &&
+                   !selectedCourse.acceptedQualificationTypes?.length &&
+                   !selectedCourse.acceptedQualificationNames?.length && (
+                    <p className="text-sm text-gray-500">No specific requirements listed.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Why matched */}
+              {selectedCourse.matchedBecause?.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900 mb-2">Why this matched you</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedCourse.matchedBecause.map((reason, idx) => (
+                      <span key={idx} className="px-2 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                        {reason}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Close button */}
+              <div className="pt-2">
+                <button
+                  onClick={() => setSelectedCourse(null)}
+                  className="w-full py-2.5 rounded-xl bg-primary-600 text-white font-medium hover:bg-primary-700 transition-colors shadow-lg shadow-primary-600/20"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

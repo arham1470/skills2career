@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, GraduationCap, ArrowRight, CheckCircle2, Loader2, Building2, Check, Sparkles } from "lucide-react";
+import { BookOpen, GraduationCap, ArrowRight, CheckCircle2, Loader2, Building2, Check, Sparkles, ChevronDown, Pencil } from "lucide-react";
 import api from "../utils/api";
 import Button from "../components/ui/Button";
+import CustomSelect from "../components/ui/CustomSelect";
+import AutocompleteInput from "../components/ui/AutocompleteInput";
 
 const currentQualifications = [
   { value: "O/L", label: "O/L (Ordinary Level)", desc: "6-10 subject passes", icon: GraduationCap },
@@ -46,6 +48,7 @@ const CareerPathway = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [expandedStep, setExpandedStep] = useState(1);
   const [formData, setFormData] = useState({
     currentQualification: "",
     olPasses: "",
@@ -144,6 +147,13 @@ const CareerPathway = () => {
 
   const summaryItems = getSummaryItems();
 
+  // Auto-collapse Step 1 and expand Step 2 when qualification is selected
+  useEffect(() => {
+    if (formData.currentQualification && expandedStep === 1) {
+      setExpandedStep(2);
+    }
+  }, [formData.currentQualification]);
+
   return (
     <div className="min-h-screen bg-gray-50 relative">
       {/* Dot pattern background */}
@@ -200,203 +210,242 @@ const CareerPathway = () => {
           {/* Main Form */}
           <div className="lg:col-span-2 space-y-6">
         {/* Step 1: Select Education Level */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 animate-fade-up">
-          <div className="flex items-center gap-3 mb-4">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${formData.currentQualification ? "bg-emerald-100 text-emerald-700" : "bg-primary-100 text-primary-700"}`}>
-              {formData.currentQualification ? <CheckCircle2 className="w-4 h-4" /> : "1"}
-            </div>
-            <h2 className="text-lg font-semibold text-gray-900">What qualification do you currently hold?</h2>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {currentQualifications.map((level) => (
-              <button
-                key={level.value}
-                onClick={() => handleChange("currentQualification", level.value)}
-                className={`group relative flex items-center gap-4 p-5 rounded-xl border-2 transition-all duration-300 text-left ${
-                  formData.currentQualification === level.value
-                    ? "border-primary-500 bg-primary-50/50 shadow-md"
-                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm hover:-translate-y-0.5"
-                }`}
-              >
-                <div className={`p-3 rounded-xl transition-colors ${
-                  formData.currentQualification === level.value ? "bg-primary-100" : "bg-gray-100 group-hover:bg-gray-200"
-                }`}>
-                  <level.icon className={`w-6 h-6 transition-colors ${
-                    formData.currentQualification === level.value ? "text-primary-600" : "text-gray-500 group-hover:text-gray-700"
-                  }`} />
-                </div>
-                <div>
-                  <span className={`block font-semibold text-sm ${
-                    formData.currentQualification === level.value ? "text-primary-900" : "text-gray-900"
-                  }`}>
-                    {level.label}
-                  </span>
-                  <span className="text-xs text-gray-500">{level.desc}</span>
-                </div>
-                {formData.currentQualification === level.value && (
-                  <div className="absolute top-3 right-3 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 text-white" />
-                  </div>
+        <div className={`bg-white rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 ${expandedStep === 1 ? "p-6" : "p-0 overflow-hidden"} animate-fade-up`}>
+          {/* Header — always visible, clickable when collapsed */}
+          <button
+            onClick={() => setExpandedStep(1)}
+            className={`w-full flex items-center justify-between text-left transition-all duration-200 ${expandedStep === 1 ? "" : "p-5 hover:bg-gray-50"}`}
+          >
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${formData.currentQualification ? "bg-emerald-100 text-emerald-700" : "bg-primary-100 text-primary-700"}`}>
+                {formData.currentQualification ? <CheckCircle2 className="w-4 h-4" /> : "1"}
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">What qualification do you currently hold?</h2>
+                {expandedStep !== 1 && formData.currentQualification && (
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    {currentQualifications.find((q) => q.value === formData.currentQualification)?.label}
+                  </p>
                 )}
-              </button>
-            ))}
-          </div>
+              </div>
+            </div>
+            {expandedStep !== 1 && formData.currentQualification && (
+              <div className="flex items-center gap-2 text-sm text-primary-600 font-medium">
+                <Pencil className="w-4 h-4" />
+                <span>Change</span>
+                <ChevronDown className="w-4 h-4" />
+              </div>
+            )}
+          </button>
+
+          {/* Expanded content */}
+          {expandedStep === 1 && (
+            <div className="mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {currentQualifications.map((level) => (
+                  <button
+                    key={level.value}
+                    onClick={() => handleChange("currentQualification", level.value)}
+                    className={`group relative flex items-center gap-4 p-5 rounded-xl border-2 transition-all duration-300 text-left ${
+                      formData.currentQualification === level.value
+                        ? "border-primary-500 bg-primary-50/50 shadow-md"
+                        : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm hover:-translate-y-0.5"
+                    }`}
+                  >
+                    <div className={`p-3 rounded-xl transition-colors ${
+                      formData.currentQualification === level.value ? "bg-primary-100" : "bg-gray-100 group-hover:bg-gray-200"
+                    }`}>
+                      <level.icon className={`w-6 h-6 transition-colors ${
+                        formData.currentQualification === level.value ? "text-primary-600" : "text-gray-500 group-hover:text-gray-700"
+                      }`} />
+                    </div>
+                    <div>
+                      <span className={`block font-semibold text-sm ${
+                        formData.currentQualification === level.value ? "text-primary-900" : "text-gray-900"
+                      }`}>
+                        {level.label}
+                      </span>
+                      <span className="text-xs text-gray-500">{level.desc}</span>
+                    </div>
+                    {formData.currentQualification === level.value && (
+                      <div className="absolute top-3 right-3 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
+                        <Check className="w-3.5 h-3.5 text-white" />
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Step 2: Enter Details */}
         {formData.currentQualification && (
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 animate-fade-up animate-delay-100">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-bold">2</div>
-              <h2 className="text-lg font-semibold text-gray-900">Enter Your Details</h2>
-            </div>
-
-            {/* O/L Fields */}
-            {formData.currentQualification === "O/L" && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Number of O/L Passes</label>
-                  <select
-                    value={formData.olPasses}
-                    onChange={(e) => handleChange("olPasses", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  >
-                    <option value="">Select passes</option>
-                    {[...Array(10)].map((_, i) => (
-                      <option key={i} value={i}>{i} passes</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Subjects Passed (Optional)</label>
-                  <div className="flex flex-wrap gap-2">
-                    {olSubjects.map((subject) => {
-                      const selected = formData.olMandatorySubjects.includes(subject);
-                      return (
-                        <button
-                          key={subject}
-                          onClick={() => toggleSubject(subject)}
-                          className={`px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200 ${
-                            selected
-                              ? "bg-primary-600 text-white border-primary-600 shadow-md shadow-primary-200"
-                              : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                          }`}
-                        >
-                          {selected && <Check className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" />}
-                          {subject}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <p className="text-xs text-gray-400 mt-2">Select the subjects you have passed</p>
-                </div>
-              </div>
-            )}
-
-            {/* A/L Fields */}
-            {formData.currentQualification === "A/L" && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">A/L Stream</label>
-                  <select
-                    value={formData.alStream}
-                    onChange={(e) => handleChange("alStream", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  >
-                    <option value="">Select stream</option>
-                    {alStreams.map((stream) => (
-                      <option key={stream} value={stream}>{stream}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Number of A/L Passes</label>
-                  <select
-                    value={formData.alPasses}
-                    onChange={(e) => handleChange("alPasses", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  >
-                    <option value="">Select passes</option>
-                    {[0, 1, 2, 3, 4].map((num) => (
-                      <option key={num} value={num}>{num} passes</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
-
-            {/* Higher Education Fields (Diploma / HND / Bachelor) */}
-            {["Diploma", "HND", "Bachelor"].includes(formData.currentQualification) && (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Qualification Name (Optional)</label>
-                  <input
-                    list="qualification-names"
-                    value={formData.qualificationName}
-                    onChange={(e) => handleChange("qualificationName", e.target.value)}
-                    placeholder="e.g., Pearson HND, SLIATE HND, NIBM Diploma"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  />
-                  <datalist id="qualification-names">
-                    {commonQualificationNames.map((name) => (
-                      <option key={name} value={name} />
-                    ))}
-                  </datalist>
-                  <p className="text-xs text-gray-400 mt-2">
-                    Enter the specific qualification name if known. This improves match accuracy.
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Field of Study</label>
-                  <select
-                    value={formData.fieldOfStudy}
-                    onChange={(e) => handleChange("fieldOfStudy", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  >
-                    <option value="">Select your field</option>
-                    {fieldsOfStudy.map((field) => (
-                      <option key={field} value={field}>{field}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">GPA (Optional)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="4"
-                    value={formData.gpa}
-                    onChange={(e) => handleChange("gpa", e.target.value)}
-                    placeholder="Leave blank if not sure, or enter your GPA"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Submit */}
-        {formData.currentQualification && (
-          <div className="flex justify-end animate-fade-up animate-delay-200">
-            <Button
-              variant="primary"
-              onClick={handleFindCourses}
-              disabled={!isStepValid() || loading}
-              className="px-8 py-3 text-base shadow-lg shadow-primary-600/25 hover:shadow-xl hover:shadow-primary-600/30 hover:-translate-y-0.5"
+          <div className={`bg-white rounded-2xl border border-gray-200 shadow-sm transition-all duration-300 ${expandedStep === 2 ? "p-6" : "p-0 overflow-hidden"} animate-fade-up animate-delay-100`}>
+            {/* Header — always visible, clickable when collapsed */}
+            <button
+              onClick={() => setExpandedStep(2)}
+              className={`w-full flex items-center justify-between text-left transition-all duration-200 ${expandedStep === 2 ? "" : "p-5 hover:bg-gray-50"}`}
             >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Matching...
-                </>
-              ) : (
-                <>
-                  Find Courses <ArrowRight className="w-5 h-5 ml-2" />
-                </>
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isStepValid() ? "bg-emerald-100 text-emerald-700" : "bg-primary-100 text-primary-700"}`}>
+                  {isStepValid() ? <CheckCircle2 className="w-4 h-4" /> : "2"}
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Enter Your Details</h2>
+                  {expandedStep !== 2 && (
+                    <p className="text-sm text-gray-500 mt-0.5">
+                      {formData.currentQualification === "O/L" && formData.olPasses !== "" && (
+                        <>{formData.olPasses} passes{formData.olMandatorySubjects.length > 0 && ` · ${formData.olMandatorySubjects.length} subjects`}</>
+                      )}
+                      {formData.currentQualification === "A/L" && formData.alStream && (
+                        <>{formData.alStream} · {formData.alPasses} passes</>
+                      )}
+                      {["Diploma", "HND", "Bachelor"].includes(formData.currentQualification) && formData.fieldOfStudy && (
+                        <>{formData.fieldOfStudy}{formData.gpa && ` · GPA ${formData.gpa}`}</>
+                      )}
+                      {formData.currentQualification === "O/L" && formData.olPasses === "" && "Waiting for details..."}
+                      {formData.currentQualification === "A/L" && !formData.alStream && "Waiting for details..."}
+                      {["Diploma", "HND", "Bachelor"].includes(formData.currentQualification) && !formData.fieldOfStudy && "Waiting for details..."}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {expandedStep !== 2 && (
+                <div className="flex items-center gap-2 text-sm text-primary-600 font-medium">
+                  <Pencil className="w-4 h-4" />
+                  <span>Edit</span>
+                  <ChevronDown className="w-4 h-4" />
+                </div>
               )}
-            </Button>
+            </button>
+
+            {/* Expanded content */}
+            {expandedStep === 2 && (
+              <div className="mt-4 space-y-4">
+                {/* O/L Fields */}
+                {formData.currentQualification === "O/L" && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Number of O/L Passes</label>
+                      <CustomSelect
+                        value={formData.olPasses}
+                        onChange={(val) => handleChange("olPasses", val)}
+                        placeholder="Select passes"
+                        options={[...Array(10)].map((_, i) => ({ value: String(i), label: `${i} passes` }))}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Subjects Passed (Optional)</label>
+                      <div className="flex flex-wrap gap-2">
+                        {olSubjects.map((subject) => {
+                          const selected = formData.olMandatorySubjects.includes(subject);
+                          return (
+                            <button
+                              key={subject}
+                              onClick={() => toggleSubject(subject)}
+                              className={`px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200 ${
+                                selected
+                                  ? "bg-primary-600 text-white border-primary-600 shadow-md shadow-primary-200"
+                                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                              }`}
+                            >
+                              {selected && <Check className="w-3.5 h-3.5 inline-block mr-1 -mt-0.5" />}
+                              {subject}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p className="text-xs text-gray-400 mt-2">Select the subjects you have passed</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* A/L Fields */}
+                {formData.currentQualification === "A/L" && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">A/L Stream</label>
+                      <CustomSelect
+                        value={formData.alStream}
+                        onChange={(val) => handleChange("alStream", val)}
+                        placeholder="Select stream"
+                        options={alStreams}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Number of A/L Passes</label>
+                      <CustomSelect
+                        value={formData.alPasses}
+                        onChange={(val) => handleChange("alPasses", val)}
+                        placeholder="Select passes"
+                        options={[0, 1, 2, 3, 4].map((num) => ({ value: String(num), label: `${num} passes` }))}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Higher Education Fields (Diploma / HND / Bachelor) */}
+                {["Diploma", "HND", "Bachelor"].includes(formData.currentQualification) && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Qualification Name (Optional)</label>
+                      <AutocompleteInput
+                        value={formData.qualificationName}
+                        onChange={(val) => handleChange("qualificationName", val)}
+                        placeholder="e.g., Pearson HND, SLIATE HND, NIBM Diploma"
+                        options={commonQualificationNames}
+                      />
+                      <p className="text-xs text-gray-400 mt-2">
+                        Enter the specific qualification name if known. This improves match accuracy.
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">Field of Study</label>
+                      <CustomSelect
+                        value={formData.fieldOfStudy}
+                        onChange={(val) => handleChange("fieldOfStudy", val)}
+                        placeholder="Select your field"
+                        options={fieldsOfStudy}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">GPA (Optional)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        max="4"
+                        value={formData.gpa}
+                        onChange={(e) => handleChange("gpa", e.target.value)}
+                        placeholder="Leave blank if not sure, or enter your GPA"
+                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Submit */}
+                <div className="flex justify-end pt-2 animate-fade-up animate-delay-200">
+                  <Button
+                    variant="primary"
+                    onClick={handleFindCourses}
+                    disabled={!isStepValid() || loading}
+                    className="px-8 py-3 text-base shadow-lg shadow-primary-600/25 hover:shadow-xl hover:shadow-primary-600/30 hover:-translate-y-0.5"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Matching...
+                      </>
+                    ) : (
+                      <>
+                        Find Courses <ArrowRight className="w-5 h-5 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         )}
           </div>
