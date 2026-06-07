@@ -1,6 +1,7 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MapPin, Clock, User, Loader2, GraduationCap, ChevronLeft, ChevronRight, MessageSquare, FileText, X, Phone, Mail } from "lucide-react";
+import { Search, MapPin, Clock, User, GraduationCap, ChevronLeft, ChevronRight, MessageSquare, FileText, X, Phone, Mail } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 import CustomSelect from "../../components/ui/CustomSelect";
@@ -140,7 +141,7 @@ const SearchCandidates = () => {
 
   const getAvatar = (name, path) => getImageUrl(path, name);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   return (
     <div className="space-y-6">
@@ -292,7 +293,7 @@ const SearchCandidates = () => {
                     <FileText className="w-4 h-4" /> Resume
                   </Button>
                   <Button variant="primary" onClick={() => handleMessage(c)} disabled={messagingId === c._id} className="w-full sm:w-auto flex-1 text-sm py-2 gap-1.5">
-                    {messagingId === c._id ? <Loader2 className="w-4 h-4 animate-spin" /> : <MessageSquare className="w-4 h-4" />} Message
+                    {messagingId === c._id ? <FileText className="w-4 h-4 animate-pulse" /> : <MessageSquare className="w-4 h-4" />} Message
                   </Button>
                 </div>
               </div>

@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Loader2, CheckCircle, AlertCircle, Upload, FileText, Trash2 } from "lucide-react";
+import {  CheckCircle, AlertCircle, Upload, FileText, Trash2 } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 
@@ -53,7 +54,7 @@ const CVUpload = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -93,7 +94,7 @@ const CVUpload = () => {
             <input type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" onChange={handleFileChange} className="hidden" />
           </label>
           <Button onClick={handleUpload} disabled={uploading || !file} className="min-w-[120px]">
-            {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Upload CV"}
+            {uploading ? <FileText className="w-5 h-5 animate-pulse" /> : "Upload CV"}
           </Button>
         </div>
       </div>

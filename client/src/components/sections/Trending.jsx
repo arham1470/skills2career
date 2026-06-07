@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, Clock, Building2, Loader2 } from "lucide-react";
+import { MapPin, Clock, Building2, FileText } from "lucide-react";
 import Badge from "../ui/Badge";
 import Button from "../ui/Button";
 import api from "../../utils/api";
@@ -56,7 +56,7 @@ const Trending = () => {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-primary-500" />
+            <FileText className="w-10 h-10 animate-pulse text-primary-500" />
           </div>
         ) : (
           <>

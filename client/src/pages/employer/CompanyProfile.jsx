@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Camera, Loader2, CheckCircle, AlertCircle, Building2, Globe, MapPin, Phone, Mail, ShieldCheck, ShieldAlert, Lock, Pencil, X } from "lucide-react";
+import { Camera, CheckCircle, AlertCircle, Building2, Globe, MapPin, Phone, Mail, ShieldCheck, ShieldAlert, Lock, Pencil, X, FileText } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 import CustomSelect from "../../components/ui/CustomSelect";
@@ -108,7 +109,7 @@ const CompanyProfile = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   const InfoRow = ({ label, value, isEmpty }) => (
     <div className="p-3 rounded-lg bg-gray-50/50 border border-transparent hover:border-primary-200 hover:bg-primary-50/30 hover:shadow-sm transition-all duration-300 cursor-default">
@@ -173,7 +174,7 @@ const CompanyProfile = () => {
               <Camera className="w-4 h-4" />
               <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImageChange} disabled={uploading || isLocked} />
             </label>
-            {uploading && <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center"><Loader2 className="w-5 h-5 animate-spin text-white" /></div>}
+            {uploading && <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center"><FileText className="w-5 h-5 animate-pulse text-white" /></div>}
           </div>
           <h2 className="text-xl font-bold text-gray-900">{form.companyName || "Your Company"}</h2>
           <p className="text-sm text-gray-500">{email}</p>
@@ -257,7 +258,7 @@ const CompanyProfile = () => {
                 <X className="w-4 h-4 mr-1" /> Cancel
               </Button>
               <Button type="submit" disabled={saving || isLocked} className="min-w-[120px]">
-                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
+                {saving ? <FileText className="w-5 h-5 animate-pulse" /> : "Save Changes"}
               </Button>
             </div>
           </form>

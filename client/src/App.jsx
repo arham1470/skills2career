@@ -1,9 +1,10 @@
+import { FileText } from "lucide-react";
+import PageLoader from "./components/ui/PageLoader";
 import React, { Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { Loader2 } from "lucide-react";
 
 // Public Pages
 import Landing from "./pages/Landing";
@@ -53,7 +54,7 @@ import ManageCourses from "./pages/admin/ManageCourses";
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
-    <Loader2 className="w-10 h-10 animate-spin text-primary-500" />
+    <FileText className="w-10 h-10 animate-pulse text-primary-500" />
   </div>
 );
 

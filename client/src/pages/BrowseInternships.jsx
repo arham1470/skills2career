@@ -11,11 +11,11 @@ import { useAuth } from "../context/AuthContext";
 import ApplyModal from "../components/ui/ApplyModal";
 
 const CATEGORIES = [
-  "Technology & IT", 
-  "Marketing & Communications", 
-  "Finance & Accounting", 
-  "Design & Creative Industries", 
-  "Engineering & Manufacturing", 
+  "Technology & IT",
+  "Marketing & Communications",
+  "Finance & Accounting",
+  "Design & Creative Industries",
+  "Engineering & Manufacturing",
   "Healthcare & Wellness",
   "Business & Management",
   "Education & Teaching",
@@ -118,18 +118,18 @@ const BrowseInternships = () => {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const { user } = useAuth();
-  
+
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({ page: 1, pages: 1, total: 0 });
-  
+
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
-  
+
   const [filters, setFilters] = useState({ category: "", location: "", mode: "", skill: "" });
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({ category: false, location: false, mode: false });
-  
+
   const [applyModal, setApplyModal] = useState({ isOpen: false, job: null });
   const [detailModal, setDetailModal] = useState({ isOpen: false, job: null });
 
@@ -200,17 +200,12 @@ const BrowseInternships = () => {
       <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] rounded-full bg-emerald-400/5 blur-[100px] pointer-events-none" />
 
       <Navbar />
-      
+
       <main className="flex-1 max-w-[1500px] mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-8 relative z-10">
-        
-        {/* Hero Section */}
-        <div className="mb-10 text-center max-w-2xl mx-auto animate-fade-up">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
-            Find your next <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">breakthrough</span>
-          </h1>
-        </div>
+
+
         <div className="flex flex-col lg:flex-row gap-8">
-          
+
           {/* Sidebar Filters */}
           <aside className={`fixed inset-0 z-40 bg-white p-6 w-72 transform transition-transform duration-300 lg:relative lg:transform-none lg:bg-transparent lg:p-0 lg:w-64 lg:block lg:sticky lg:top-24 lg:self-start overflow-y-auto ${mobileFiltersOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
             <div className="flex justify-between items-center mb-6 lg:hidden">
@@ -221,7 +216,7 @@ const BrowseInternships = () => {
             <div className="space-y-4">
               {/* Category Section */}
               <div className="bg-white/60 backdrop-blur-sm border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm">
-                <button 
+                <button
                   onClick={() => toggleSection("category")}
                   className="w-full flex items-center justify-between p-4 hover:bg-gray-50/50 transition-colors"
                 >
@@ -241,11 +236,10 @@ const BrowseInternships = () => {
                       <button
                         key={cat}
                         onClick={() => handleFilterChange("category", cat)}
-                        className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${
-                          filters.category === cat
+                        className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${filters.category === cat
                             ? "bg-primary-500 text-white font-medium shadow-md shadow-primary-500/20"
                             : "text-gray-600 hover:bg-gray-100/80 hover:text-gray-900"
-                        }`}
+                          }`}
                       >
                         {cat}
                       </button>
@@ -256,7 +250,7 @@ const BrowseInternships = () => {
 
               {/* Location Section */}
               <div className="bg-white/60 backdrop-blur-sm border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm">
-                <button 
+                <button
                   onClick={() => toggleSection("location")}
                   className="w-full flex items-center justify-between p-4 hover:bg-gray-50/50 transition-colors"
                 >
@@ -276,11 +270,10 @@ const BrowseInternships = () => {
                       <button
                         key={loc}
                         onClick={() => handleFilterChange("location", loc)}
-                        className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${
-                          filters.location === loc
+                        className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${filters.location === loc
                             ? "bg-emerald-500 text-white font-medium shadow-md shadow-emerald-500/20"
                             : "text-gray-600 hover:bg-gray-100/80 hover:text-gray-900"
-                        }`}
+                          }`}
                       >
                         {loc}
                       </button>
@@ -291,7 +284,7 @@ const BrowseInternships = () => {
 
               {/* Work Mode Section */}
               <div className="bg-white/60 backdrop-blur-sm border border-gray-200/80 rounded-2xl overflow-hidden shadow-sm">
-                <button 
+                <button
                   onClick={() => toggleSection("mode")}
                   className="w-full flex items-center justify-between p-4 hover:bg-gray-50/50 transition-colors"
                 >
@@ -311,11 +304,10 @@ const BrowseInternships = () => {
                       <button
                         key={mode}
                         onClick={() => handleFilterChange("mode", mode)}
-                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all ${
-                          filters.mode === mode
+                        className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all ${filters.mode === mode
                             ? "bg-amber-500 text-white shadow-md shadow-amber-500/20"
                             : "bg-white text-gray-600 border border-gray-200 hover:border-amber-300 hover:text-amber-700"
-                        }`}
+                          }`}
                       >
                         {mode}
                       </button>
@@ -334,27 +326,33 @@ const BrowseInternships = () => {
 
           {/* Main Content */}
           <div className="flex-1 space-y-6">
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-between mb-2">
-              <div className="relative w-full sm:w-96 group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Search className="w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
+            <div className="flex flex-col xl:flex-row gap-4 items-start xl:items-center justify-between mb-6">
+              <div className="flex items-center gap-3 w-full xl:w-auto">
+                <div className="relative w-full sm:w-96 group shrink-0">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Search className="w-5 h-5 text-gray-400 group-focus-within:text-primary-500 transition-colors" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search internships, companies, skills..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3 bg-white/80 backdrop-blur-md border border-gray-200/80 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none shadow-sm transition-all text-gray-900 placeholder-gray-400"
+                  />
                 </div>
-                <input 
-                  type="text" 
-                  placeholder="Search internships, companies, skills..." 
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-white/80 backdrop-blur-md border border-gray-200/80 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none shadow-sm transition-all text-gray-900 placeholder-gray-400"
-                />
+                <button className="lg:hidden flex items-center gap-2 px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-200/80 rounded-2xl text-gray-700 relative shadow-sm hover:bg-gray-50 transition-colors shrink-0" onClick={() => setMobileFiltersOpen(true)}>
+                  <Filter className="w-4 h-4" /> Filters
+                  {activeFilterCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
               </div>
-              <button className="lg:hidden flex items-center gap-2 px-5 py-3 bg-white/80 backdrop-blur-md border border-gray-200/80 rounded-2xl text-gray-700 relative shadow-sm hover:bg-gray-50 transition-colors" onClick={() => setMobileFiltersOpen(true)}>
-                <Filter className="w-4 h-4" /> Filters
-                {activeFilterCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md">
-                    {activeFilterCount}
-                  </span>
-                )}
-              </button>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight shrink-0 text-left xl:text-right">
+                Find your next <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">breakthrough</span>
+              </h1>
             </div>
 
             {/* Active Filters & Results Summary */}
@@ -418,13 +416,13 @@ const BrowseInternships = () => {
             ) : (
               <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {internships.map((job, index) => (
-                  <div 
-                    key={job._id} 
+                  <div
+                    key={job._id}
                     className="group bg-white/60 backdrop-blur-md rounded-2xl border border-gray-200/60 p-6 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:-translate-y-1.5 hover:border-primary-300 transition-all duration-500 flex flex-col relative overflow-hidden animate-fade-up"
                     style={{ animationDelay: `${index * 50}ms`, animationFillMode: "both" }}
                   >
                     <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 to-primary-500/0 group-hover:from-primary-500/5 group-hover:to-primary-500/10 transition-all duration-500 pointer-events-none" />
-                    
+
                     <div className="flex justify-between items-start mb-5 relative z-10">
                       {job.matchPercentage !== undefined ? (
                         <div className={`px-3 py-1 rounded-full text-xs font-bold border ${getMatchColor(job.matchPercentage).light} ${getMatchColor(job.matchPercentage).text} ${getMatchColor(job.matchPercentage).border} shadow-sm flex items-center gap-1.5`}>
@@ -436,7 +434,7 @@ const BrowseInternships = () => {
                       )}
                       <span className="text-xs text-gray-400 font-medium bg-gray-50/80 px-2 py-1 rounded-md">{new Date(job.createdAt).toLocaleDateString()}</span>
                     </div>
-                    
+
                     <div className="flex gap-4 mb-4 relative z-10">
                       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 group-hover:shadow-md transition-all duration-500">
                         <Layers className="w-6 h-6 text-primary-500" />
@@ -473,8 +471,8 @@ const BrowseInternships = () => {
                     </div>
 
                     <div className="mt-auto pt-4 border-t border-gray-100/80 relative z-10">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full bg-white group-hover:bg-primary-600 group-hover:text-white group-hover:border-primary-600 group-hover:shadow-md group-hover:shadow-primary-500/20 transition-all duration-300 rounded-xl py-2.5"
                         onClick={() => setDetailModal({ isOpen: true, job })}
                       >
@@ -488,8 +486,8 @@ const BrowseInternships = () => {
 
             {pagination.pages > 1 && (
               <div className="flex justify-center items-center gap-1 pt-4 flex-wrap">
-                <button 
-                  onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))} 
+                <button
+                  onClick={() => setPagination(p => ({ ...p, page: p.page - 1 }))}
                   disabled={pagination.page === 1}
                   className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -506,23 +504,22 @@ const BrowseInternships = () => {
                   } else {
                     pageNum = pagination.page - 3 + i;
                   }
-                  
+
                   return (
                     <button
                       key={pageNum}
                       onClick={() => setPagination(p => ({ ...p, page: pageNum }))}
-                      className={`min-w-[40px] h-10 px-3 rounded-lg text-sm font-medium transition-all ${
-                        pagination.page === pageNum
+                      className={`min-w-[40px] h-10 px-3 rounded-lg text-sm font-medium transition-all ${pagination.page === pageNum
                           ? "bg-primary-600 text-white border-primary-600"
                           : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-primary-300"
-                      }`}
+                        }`}
                     >
                       {pageNum}
                     </button>
                   );
                 })}
-                <button 
-                  onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))} 
+                <button
+                  onClick={() => setPagination(p => ({ ...p, page: p.page + 1 }))}
                   disabled={pagination.page === pagination.pages}
                   className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -668,8 +665,8 @@ const BrowseInternships = () => {
                       {detailModal.job.matchPercentage >= 75
                         ? "🔥 Great fit! Your core skills align extremely well with this role."
                         : detailModal.job.matchPercentage >= 50
-                        ? "👍 Decent match. Consider highlighting relevant experience in your profile."
-                        : "💡 Low match. You may want to build more relevant skills before applying."}
+                          ? "👍 Decent match. Consider highlighting relevant experience in your profile."
+                          : "💡 Low match. You may want to build more relevant skills before applying."}
                     </p>
                   </div>
                 </div>

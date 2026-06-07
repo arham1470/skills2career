@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Loader2, AlertCircle, MapPin, Clock, Building2, Briefcase } from "lucide-react";
+import {  AlertCircle, MapPin, Clock, Building2, Briefcase } from "lucide-react";
 import api from "../../utils/api";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/ui/Button";
@@ -31,7 +32,7 @@ const Recommended = () => {
     fetchRecommended();
   }, []);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   if (error) return (
     <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl text-center">

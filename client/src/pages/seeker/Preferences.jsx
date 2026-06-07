@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Loader2, CheckCircle, AlertCircle, Save, Pencil, Briefcase, MapPin, Wallet, Monitor } from "lucide-react";
+import { CheckCircle, AlertCircle, Save, Pencil, Briefcase, MapPin, Wallet, Monitor, FileText } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 
@@ -105,7 +106,7 @@ const Preferences = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   return (
     <div className="w-full space-y-6">
@@ -192,7 +193,7 @@ const Preferences = () => {
               Cancel
             </Button>
             <Button type="submit" disabled={saving} className="min-w-[160px]">
-              {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />}
+              {saving ? <FileText className="w-5 h-5 animate-pulse mr-2" /> : <Save className="w-5 h-5 mr-2" />}
               Save Preferences
             </Button>
           </div>

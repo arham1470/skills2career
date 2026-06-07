@@ -4,6 +4,7 @@ import api from "../../utils/api";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/ui/Button";
 import ConfirmModal from "../../components/ui/ConfirmModal";
+import PageLoader from "../../components/ui/PageLoader";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare } from "lucide-react";
 import { getImageUrl } from "../../utils/getImageUrl";
@@ -74,23 +75,8 @@ const ManageApplications = () => {
                 <h1 className="text-2xl font-bold text-gray-900">Manage Applications</h1>
                 <p className="text-gray-500 mt-1">Review candidates and update their status.</p>
             </div>
-            <div className="space-y-4">
-                {[1, 2, 3].map(i => (
-                    <div key={i} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm animate-pulse">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gray-200" />
-                            <div className="h-4 bg-gray-200 rounded w-32" />
-                            <div className="h-5 bg-gray-200 rounded-full w-16 ml-auto" />
-                        </div>
-                        <div className="mt-3 h-3 bg-gray-200 rounded w-48" />
-                        <div className="mt-2 h-3 bg-gray-200 rounded w-32" />
-                        <div className="mt-3 flex gap-1.5">
-                            <div className="h-5 bg-gray-200 rounded w-16" />
-                            <div className="h-5 bg-gray-200 rounded w-16" />
-                            <div className="h-5 bg-gray-200 rounded w-16" />
-                        </div>
-                    </div>
-                ))}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm py-12">
+                <PageLoader text="Scanning Applications..." />
             </div>
         </div>
     );

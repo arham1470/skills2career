@@ -122,10 +122,10 @@ exports.deleteCertificate = async (req, res) => {
     const profile = await SeekerProfile.findOne({ user: req.user.id });
     const cert = profile.certificates.id(id);
     if (!cert) return res.status(404).json({ message: "Certificate not found" });
-    
+
     const fullPath = path.join(__dirname, "..", cert.filePath);
     if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
-    
+
     profile.certificates.pull(id);
     await profile.save();
     res.status(200).json({ message: "Certificate deleted successfully" });
@@ -183,8 +183,7 @@ const calculateProfileCompletion = (profile) => {
   const resumeStepComplete =
     (profile.education?.length || 0) > 0 &&
     (profile.projects?.length || 0) > 0 &&
-    (profile.references?.length || 0) > 0 &&
-    !!profile.cvFile?.fileName;
+    (profile.references?.length || 0) > 0;
 
   // Step 3: Skills - both coreSkills and additionalSkills must be filled
   const skillsStepComplete =

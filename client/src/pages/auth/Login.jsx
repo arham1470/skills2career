@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Home, Mail, Lock, Loader2, Sparkles, ArrowRight, Briefcase, Globe, Award } from "lucide-react";
+import { Home, Mail, Lock, Sparkles, ArrowRight, Briefcase, Globe, Award, FileText } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -28,6 +28,9 @@ const Login = () => {
       navigate(dashboardPath);
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
     } finally {
       setLoading(false);
     }
@@ -181,7 +184,7 @@ const Login = () => {
                 className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-white transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <FileText className="w-5 h-5 animate-pulse" />
                 ) : (
                   <>
                     Sign In

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Home, Mail, Lock, KeyRound, Loader2, Sparkles, UserPlus, ArrowRight, Briefcase, Globe, Award } from "lucide-react";
+import { Home, Mail, Lock, KeyRound, Sparkles, UserPlus, ArrowRight, Briefcase, Globe, Award, FileText } from "lucide-react";
 
 const Register = () => {
   const [searchParams] = useSearchParams();
@@ -223,7 +223,7 @@ const Register = () => {
                 className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-white transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 bg-gradient-to-r ${roleGradient} disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none`}
               >
                 {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <FileText className="w-5 h-5 animate-pulse" />
                 ) : (
                   <>
                     <UserPlus className="w-5 h-5" />

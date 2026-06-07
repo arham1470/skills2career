@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ChevronRight, ChevronLeft, CheckCircle, Brain, Heart, Wrench,
-  Trophy, RotateCcw, ArrowRight, Sparkles, Briefcase, Loader2,
-  Zap, Target, Clock
-} from "lucide-react";
+import { ChevronRight, ChevronLeft, CheckCircle, Brain, Heart, Wrench,
+  Trophy, RotateCcw, ArrowRight, Sparkles, Briefcase,
+  Zap, Target, Clock, FileText } from "lucide-react";
 import { QUIZ_SECTIONS, calculateResults } from "../../data/quizData";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
@@ -221,7 +219,7 @@ const CareerQuiz = () => {
 
               {loadingPrevious ? (
                 <div className="flex items-center gap-2 text-gray-500 text-sm mb-4">
-                  <Loader2 className="w-4 h-4 animate-spin" /> Checking previous result...
+                  <FileText className="w-4 h-4 animate-pulse" /> Checking previous result...
                 </div>
               ) : previousResult ? (
                 <div className="bg-primary-50 border border-primary-100 rounded-xl p-5 mb-6">
@@ -438,7 +436,7 @@ const CareerQuiz = () => {
           {!saved && (
             <Button variant="primary" onClick={handleSave} disabled={saving}>
               {saving ? (
-                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Saving...</>
+                <><FileText className="w-4 h-4 animate-pulse mr-2" /> Saving...</>
               ) : (
                 <><CheckCircle className="w-4 h-4 mr-2" /> Save Result</>
               )}

@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Loader2, CheckCircle, AlertCircle, Upload, FileText, Trash2, Download, Calendar, Plus, X } from "lucide-react";
+import {  CheckCircle, AlertCircle, Upload, FileText, Trash2, Download, Calendar, Plus, X } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import api from "../../utils/api";
@@ -82,7 +83,7 @@ const Certificates = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   return (
     <div className="space-y-6">
@@ -150,7 +151,7 @@ const Certificates = () => {
             <X className="w-4 h-4 mr-1" /> Cancel
           </Button>
           <Button type="submit" disabled={uploading} className="min-w-[120px]">
-            {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Upload"}
+            {uploading ? <FileText className="w-5 h-5 animate-pulse" /> : "Upload"}
           </Button>
         </div>
       </form>

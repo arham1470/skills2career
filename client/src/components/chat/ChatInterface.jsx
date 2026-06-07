@@ -1,6 +1,7 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Send, Loader2, ArrowLeft, User, CheckCheck, Briefcase, Trash2 } from "lucide-react";
+import { Send, ArrowLeft, User, CheckCheck, Briefcase, Trash2 } from "lucide-react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../hooks/useSocket";
@@ -136,7 +137,7 @@ const ChatInterface = ({ className = "" }) => {
     setDeleteDialog({ open: true, convId });
   };
 
-  if (loading) return <div className="h-full flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   return (
     <div className={`bg-white rounded-xl border border-gray-200 shadow-sm flex overflow-hidden h-full ${className}`}>

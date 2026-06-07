@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Loader2, Users, Briefcase, FileText, Ban } from "lucide-react";
+import {  Users, Briefcase, FileText, Ban } from "lucide-react";
 import api from "../../utils/api";
 
 const Dashboard = () => {
@@ -10,7 +11,7 @@ const Dashboard = () => {
     api.get("/admin/stats").then(res => setStats(res.data.stats)).catch(console.error).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   const cards = [
     { label: "Seekers", value: stats.totalSeekers, icon: Users, color: "text-blue-600 bg-blue-50", gradient: "from-blue-500 to-blue-600" },

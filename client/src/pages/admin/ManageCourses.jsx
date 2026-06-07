@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Plus, BookOpen, Building2, Pencil, Trash2, X, Loader2, Search, GraduationCap } from "lucide-react";
+import { Plus, BookOpen, Building2, Pencil, Trash2, X, Search, GraduationCap, FileText } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 
@@ -192,9 +193,7 @@ const ManageCourses = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
-      </div>
+      <PageLoader />
     );
   }
 
@@ -564,7 +563,7 @@ const ManageCourses = () => {
                   Cancel
                 </Button>
                 <Button type="submit" variant="primary" disabled={submitting} className="flex-1">
-                  {submitting ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (editing ? "Save Changes" : "Add Course")}
+                  {submitting ? <FileText className="w-4 h-4 animate-pulse mx-auto" /> : (editing ? "Save Changes" : "Add Course")}
                 </Button>
               </div>
             </form>

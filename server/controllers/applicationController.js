@@ -63,17 +63,14 @@ exports.applyInternship = async (req, res) => {
     const existing = await Application.findOne({ internship: internshipId, student: seekerId });
     if (existing) return res.status(400).json({ message: "You have already applied for this internship" });
 
-    // Get Student CV
+    // Get Student CV (Optional now)
     const profile = await SeekerProfile.findOne({ user: seekerId }).select("cvFile skills");
-    if (!profile || !profile.cvFile?.filePath) {
-      return res.status(400).json({ message: "Please upload your CV in the CV section before applying" });
-    }
 
     // Create Application
     const application = await Application.create({
       internship: internshipId,
       student: seekerId,
-      cvPath: profile.cvFile.filePath
+      cvPath: profile?.cvFile?.filePath || null
     });
 
     // Notify Provider

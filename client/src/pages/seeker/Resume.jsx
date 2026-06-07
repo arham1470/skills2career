@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect, useRef } from "react";
-import { Loader2, CheckCircle, AlertCircle, Plus, Trash2, Eye, Printer, MapPin, Phone, Mail, Calendar, Upload, FileText, Download, X, Link, ChevronDown } from "lucide-react";
+import {  CheckCircle, AlertCircle, Plus, Trash2, Eye, Printer, MapPin, Phone, Mail, Calendar, Upload, FileText, Download, X, Link, ChevronDown } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import api from "../../utils/api";
@@ -40,6 +41,7 @@ const Resume = () => {
   const toggleSection = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
   
   const [skillsCategory, setSkillsCategory] = useState("Technology & IT");
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   
   const CATEGORIES = [
@@ -235,7 +237,7 @@ const Resume = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   return (
     <div className="space-y-6">
@@ -602,17 +604,45 @@ const Resume = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Professional Summary</label>
               <textarea name="summary" rows="7" value={form.summary} onChange={handleChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Brief overview of your career goals and strengths..." />
             </div>
-            <div>
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-2">Skills Category (for suggestions)</label>
-              <select
-                value={skillsCategory}
-                onChange={(e) => setSkillsCategory(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white mb-4"
-              >
-                {CATEGORIES.map(cat => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
+              <div className="relative mb-4">
+                <button
+                  type="button"
+                  onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                  className="w-full flex items-center justify-between px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none bg-white transition-all hover:bg-gray-50"
+                >
+                  <span className="text-gray-900 font-medium">{skillsCategory}</span>
+                  <ChevronDown className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${isCategoryOpen ? "rotate-180" : ""}`} />
+                </button>
+                
+                {isCategoryOpen && (
+                  <>
+                    <div className="fixed inset-0 z-10" onClick={() => setIsCategoryOpen(false)}></div>
+                    <div className="absolute z-20 w-full mt-2 bg-white border border-gray-100 rounded-xl shadow-xl max-h-64 overflow-y-auto custom-scrollbar">
+                      <div className="p-2 space-y-1">
+                        {CATEGORIES.map(cat => (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => {
+                              setSkillsCategory(cat);
+                              setIsCategoryOpen(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
+                              skillsCategory === cat
+                                ? "bg-primary-50 text-primary-700 font-bold"
+                                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                            }`}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
@@ -938,7 +968,7 @@ const Resume = () => {
                     <X className="w-4 h-4 mr-1" /> Cancel
                   </Button>
                   <Button type="button" onClick={handleCertUpload} disabled={certUploading} className="min-w-[100px]">
-                    {certUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Upload"}
+                    {certUploading ? <FileText className="w-5 h-5 animate-pulse" /> : "Upload"}
                   </Button>
                 </div>
               </div>
@@ -970,7 +1000,7 @@ const Resume = () => {
 
         <div className="flex justify-end pt-2">
             <Button type="submit" disabled={saving} className="min-w-[140px]">
-              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Resume Data"}
+              {saving ? <FileText className="w-5 h-5 animate-pulse" /> : "Save Resume Data"}
             </Button>
           </div>
         </form>

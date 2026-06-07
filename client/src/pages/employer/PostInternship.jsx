@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Loader2, CheckCircle, AlertCircle, Plus, X, ArrowRight, Calendar, ShieldCheck, ShieldAlert } from "lucide-react";
+import { CheckCircle, AlertCircle, Plus, X, ArrowRight, Calendar, ShieldCheck, ShieldAlert, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -238,7 +238,7 @@ const PostInternship = () => {
         <div className="flex justify-end gap-3 pt-2">
           <Button type="button" variant="secondary" onClick={() => setForm({...form, status: "Draft"})}>Save as Draft</Button>
           <Button type="submit" disabled={loading} className="min-w-[140px]">
-            {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Plus className="w-5 h-5 mr-2" />}
+            {loading ? <FileText className="w-5 h-5 animate-pulse mr-2" /> : <Plus className="w-5 h-5 mr-2" />}
             Publish Internship
           </Button>
         </div>

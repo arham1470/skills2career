@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Loader2, ShieldCheck, ShieldAlert, CheckCircle, XCircle } from "lucide-react";
+import { ShieldCheck, ShieldAlert, CheckCircle, XCircle, FileText } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 
@@ -50,9 +51,7 @@ const VerifyCompanies = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
-      </div>
+      <PageLoader />
     );
   }
 
@@ -136,7 +135,7 @@ const VerifyCompanies = () => {
                           disabled={actionId === company._id}
                         >
                           {actionId === company._id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <FileText className="w-4 h-4 animate-pulse" />
                           ) : (
                             <XCircle className="w-4 h-4" />
                           )}
@@ -147,7 +146,7 @@ const VerifyCompanies = () => {
                           disabled={actionId === company._id}
                         >
                           {actionId === company._id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <FileText className="w-4 h-4 animate-pulse" />
                           ) : (
                             <ShieldCheck className="w-4 h-4" />
                           )}

@@ -1,5 +1,6 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
-import { Camera, Loader2, CheckCircle, AlertCircle, Pencil, X, User } from "lucide-react";
+import { Camera, CheckCircle, AlertCircle, Pencil, X, User, FileText } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 import { getImageUrl } from "../../utils/getImageUrl";
@@ -95,9 +96,7 @@ const Profile = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
-      </div>
+      <PageLoader />
     );
 
   return (
@@ -156,7 +155,7 @@ const Profile = () => {
             </label>
             {uploading && (
               <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
-                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                <FileText className="w-5 h-5 animate-pulse text-white" />
               </div>
             )}
           </div>
@@ -228,7 +227,7 @@ const Profile = () => {
                 <X className="w-4 h-4 mr-1" /> Cancel
               </Button>
               <Button type="submit" disabled={saving} className="min-w-[120px]">
-                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Save Changes"}
+                {saving ? <FileText className="w-5 h-5 animate-pulse" /> : "Save Changes"}
               </Button>
             </div>
           </form>

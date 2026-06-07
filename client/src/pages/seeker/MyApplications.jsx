@@ -1,7 +1,7 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Loader2, MapPin, Clock, Briefcase, Calendar, Video,
+import {  MapPin, Clock, Briefcase, Calendar, Video,
   Building2, AlertCircle, ArrowRight, Plus
 } from "lucide-react";
 import api from "../../utils/api";
@@ -108,9 +108,7 @@ const MyApplications = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
-      </div>
+      <PageLoader />
     );
   }
 

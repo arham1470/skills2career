@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, CheckCircle, AlertCircle, Trash2, X, Pencil, Shield, Eye, EyeOff } from "lucide-react";
+import { CheckCircle, AlertCircle, Trash2, X, Pencil, Shield, Eye, EyeOff, FileText } from "lucide-react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
@@ -129,7 +129,7 @@ const Settings = () => {
                 <X className="w-4 h-4 mr-1" /> Cancel
               </Button>
               <Button type="submit" disabled={saving} className="min-w-[140px]">
-                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update Password"}
+                {saving ? <FileText className="w-5 h-5 animate-pulse" /> : "Update Password"}
               </Button>
             </div>
           </form>
@@ -225,7 +225,7 @@ const Settings = () => {
                   disabled={deleting}
                   className="flex-1 bg-red-600 hover:bg-red-700 text-white border-transparent focus:ring-red-500"
                 >
-                  {deleting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Yes, Delete"}
+                  {deleting ? <FileText className="w-5 h-5 animate-pulse" /> : "Yes, Delete"}
                 </Button>
               </div>
             </form>

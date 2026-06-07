@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, GraduationCap, ArrowRight, CheckCircle2, Loader2, Building2, Check, Sparkles, ChevronDown, Pencil, ArrowLeft } from "lucide-react";
+import { BookOpen, GraduationCap, ArrowRight, CheckCircle2, Building2, Check, Sparkles, ChevronDown, Pencil, ArrowLeft, FileText } from "lucide-react";
 import api from "../utils/api";
 import Button from "../components/ui/Button";
 import CustomSelect from "../components/ui/CustomSelect";
@@ -412,7 +412,7 @@ const CareerPathway = () => {
                       >
                         <span className="relative z-10 flex items-center justify-center">
                           {loading ? (
-                            <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Matching Pathways...</>
+                            <><FileText className="w-5 h-5 mr-2 animate-pulse" /> Matching Pathways...</>
                           ) : (
                             <>Find My Pathway <Sparkles className="w-5 h-5 ml-2 transition-transform group-hover:scale-110" /></>
                           )}

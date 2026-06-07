@@ -1,7 +1,8 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect, useCallback } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Calendar, Clock, MapPin, Video, Users, CheckCircle, XCircle, Loader2, Plus, Building2 } from "lucide-react";
+import { Calendar, Clock, MapPin, Video, Users, CheckCircle, XCircle, Plus, Building2, FileText } from "lucide-react";
 import api from "../../utils/api";
 import Button from "../../components/ui/Button";
 import Badge from "../../components/ui/Badge";
@@ -65,7 +66,7 @@ const InterviewCard = ({ iv, onStatus, updatingId, showActions = false }) => (
             onClick={() => onStatus(iv._id, "Cancelled")}
             disabled={updatingId === iv._id}
           >
-            {updatingId === iv._id ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <XCircle className="w-3.5 h-3.5 mr-1" />}
+            {updatingId === iv._id ? <FileText className="w-3.5 h-3.5 animate-pulse mr-1" /> : <XCircle className="w-3.5 h-3.5 mr-1" />}
             Cancel
           </Button>
           <Button
@@ -73,7 +74,7 @@ const InterviewCard = ({ iv, onStatus, updatingId, showActions = false }) => (
             onClick={() => onStatus(iv._id, "Completed")}
             disabled={updatingId === iv._id}
           >
-            {updatingId === iv._id ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : <CheckCircle className="w-3.5 h-3.5 mr-1" />}
+            {updatingId === iv._id ? <FileText className="w-3.5 h-3.5 animate-pulse mr-1" /> : <CheckCircle className="w-3.5 h-3.5 mr-1" />}
             Complete
           </Button>
         </div>
@@ -155,9 +156,7 @@ const InterviewScheduler = () => {
   const past     = interviews.filter(i => i.status !== "Scheduled");
 
   if (loading) return (
-    <div className="flex justify-center py-16">
-      <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
-    </div>
+    <PageLoader />
   );
 
   return (
@@ -401,7 +400,7 @@ const InterviewScheduler = () => {
                   Cancel
                 </Button>
                 <Button type="submit" className="flex-1" disabled={submitting}>
-                  {submitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
+                  {submitting && <FileText className="w-4 h-4 animate-pulse mr-2" />}
                   Send Invite
                 </Button>
               </div>

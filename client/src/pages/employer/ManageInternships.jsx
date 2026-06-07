@@ -1,9 +1,8 @@
+import PageLoader from "../../components/ui/PageLoader";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Loader2, AlertCircle, MapPin, Clock, Edit, Trash2,
-  Plus, Briefcase, CheckCircle, X
-} from "lucide-react";
+import { AlertCircle, MapPin, Clock, Edit, Trash2,
+  Plus, Briefcase, CheckCircle, X, FileText } from "lucide-react";
 import api from "../../utils/api";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/ui/Button";
@@ -150,7 +149,7 @@ const ManageInternships = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary-500" /></div>;
+  if (loading) return <PageLoader />;
 
   return (
     <div className="space-y-6">
@@ -344,7 +343,7 @@ const ManageInternships = () => {
               <div className="flex justify-end gap-3 pt-2">
                 <Button type="button" variant="secondary" onClick={() => setShowEditModal(false)}>Cancel</Button>
                 <Button type="submit" disabled={editLoading} className="min-w-[120px]">
-                  {editLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Update Internship"}
+                  {editLoading ? <FileText className="w-4 h-4 animate-pulse mr-2" /> : "Update Internship"}
                 </Button>
               </div>
             </form>
