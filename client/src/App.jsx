@@ -11,6 +11,7 @@ import Landing from "./pages/Landing";
 import RoleSelect from "./pages/auth/RoleSelect";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 import BrowseInternships from "./pages/BrowseInternships";
 import Chat from "./pages/Chat";
 import ChatInterface from "./components/chat/ChatInterface";
@@ -69,6 +70,7 @@ function App() {
             <Route path="/role-select" element={<RoleSelect />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/internships" element={<BrowseInternships />} />
             <Route path="/career-pathway" element={<CareerPathway />} />
             <Route path="/career-pathway/results" element={<CareerPathwayResults />} />

@@ -325,7 +325,7 @@ notificationSchema.post("save", async function(doc) {
       // We don't await this so it doesn't block the DB save operation
       sendEmail({
         email: doc.user.email,
-        subject: `${t.subjectIcon} ${t.label} — CareerBridge`,
+        subject: `${t.label} — CareerBridge`,
         message: emailText,
         html: emailHtml,
         attachments: [

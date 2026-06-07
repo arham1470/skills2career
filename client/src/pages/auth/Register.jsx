@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Home, Mail, Lock, KeyRound, Sparkles, UserPlus, ArrowRight, Briefcase, Globe, Award, FileText } from "lucide-react";
+import { Home, Mail, Lock, KeyRound, Sparkles, UserPlus, ArrowRight, Briefcase, Globe, Award, FileText, CheckCircle } from "lucide-react";
 
 const Register = () => {
   const [searchParams] = useSearchParams();
   const role = searchParams.get("role") || "seeker";
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, verifyRegistration } = useAuth();
+
+  const [step, setStep] = useState(1);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const inputRefs = useRef([]);
 
   const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
   const [error, setError] = useState("");
@@ -37,11 +41,45 @@ const Register = () => {
     setLoading(true);
     try {
       await register(form.email, form.password, role);
-      navigate(role === "seeker" ? "/seeker/dashboard" : "/employer/dashboard");
+      setStep(2);
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifyRegistration = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const otpString = otp.join("");
+      await verifyRegistration(form.email, otpString);
+      setStep(3);
+      setTimeout(() => {
+        navigate(role === "seeker" ? "/seeker/dashboard" : "/employer/dashboard");
+      }, 5000);
+    } catch (err) {
+      setError(err.response?.data?.message || "Invalid OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (isNaN(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    if (value !== "" && index < 5) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1].focus();
     }
   };
 
@@ -139,7 +177,9 @@ const Register = () => {
         <div className="w-full max-w-md relative z-10 animate-fade-up">
           {/* Desktop Header */}
           <div className="hidden md:block text-center space-y-3 mb-8">
-            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Create Account</h2>
+            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+              {step === 1 ? "Create Account" : step === 2 ? "Verify Email" : "Welcome!"}
+            </h2>
             <div className="flex items-center justify-center gap-2">
               <p className="text-gray-500 text-sm">
                 Registering as a{" "}
@@ -156,95 +196,157 @@ const Register = () => {
           {/* Card */}
           <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/80 shadow-2xl p-8 space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm flex items-start gap-2 animate-fade-in">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0"></span>
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-2">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    value={form.email}
-                    onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
-                    placeholder="you@example.com"
-                  />
+            {step === 1 && (
+              <form onSubmit={handleSubmit} className="space-y-5 animate-fade-in">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Email Address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      value={form.email}
+                      onChange={handleChange}
+                      className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
+                      placeholder="you@example.com"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-2">
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="password"
-                    name="password"
-                    required
-                    value={form.password}
-                    onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
-                    placeholder="Min. 6 characters"
-                  />
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="password"
+                      name="password"
+                      required
+                      value={form.password}
+                      onChange={handleChange}
+                      className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
+                      placeholder="Min. 6 characters"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-gray-800 mb-2">
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    required
-                    value={form.confirmPassword}
-                    onChange={handleChange}
-                    className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
-                    placeholder="Repeat your password"
-                  />
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Confirm Password</label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      required
+                      value={form.confirmPassword}
+                      onChange={handleChange}
+                      className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
+                      placeholder="Repeat your password"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-white transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 bg-gradient-to-r ${roleGradient} disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none`}
-              >
-                {loading ? (
-                  <FileText className="w-5 h-5 animate-pulse" />
-                ) : (
-                  <>
-                    <UserPlus className="w-5 h-5" />
-                    Create Account
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-
-            <div className="text-center pt-2 border-t border-gray-100">
-              <p className="text-sm text-gray-400">
-                Already have an account?{" "}
-                <Link
-                  to="/login"
-                  className="text-primary-600 hover:text-primary-700 font-semibold transition-colors"
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-white transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 bg-gradient-to-r ${roleGradient} disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none`}
                 >
-                  Sign in
-                </Link>
-              </p>
-            </div>
+                  {loading ? (
+                    <FileText className="w-5 h-5 animate-pulse" />
+                  ) : (
+                    <>
+                      <UserPlus className="w-5 h-5" />
+                      Create Account
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {step === 2 && (
+              <form onSubmit={handleVerifyRegistration} className="space-y-5 animate-fade-in">
+                <div className="text-center mb-6">
+                  <p className="text-gray-600 text-sm">We've sent a 6-digit verification code to <strong>{form.email}</strong>.</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-800 mb-4 text-center">Enter 6-Digit OTP</label>
+                  <div className="flex justify-center gap-2 sm:gap-3">
+                    {otp.map((digit, index) => (
+                      <input
+                        key={index}
+                        ref={(el) => (inputRefs.current[index] = el)}
+                        type="text"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
+                        className="w-10 h-12 sm:w-12 sm:h-14 text-center text-xl font-bold bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900"
+                      />
+                    ))}
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading || otp.join("").length !== 6}
+                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-white transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 bg-gradient-to-r ${roleGradient} disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none`}
+                >
+                  {loading ? (
+                    <FileText className="w-5 h-5 animate-pulse" />
+                  ) : (
+                    <>
+                      Verify Account
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+                <div className="text-center mt-4">
+                  <button 
+                    type="button" 
+                    onClick={handleSubmit} 
+                    disabled={loading}
+                    className="text-sm font-medium text-primary-600 hover:text-primary-700 disabled:opacity-50"
+                  >
+                    Resend OTP
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {step === 3 && (
+              <div className="text-center flex flex-col items-center animate-fade-in py-6">
+                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                  <CheckCircle className="w-10 h-10 text-emerald-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 leading-tight mb-2">Account Created Successfully!</h3>
+                <p className="text-gray-600 text-sm mb-6">Welcome to CareerBridge. You are being redirected to your dashboard...</p>
+                <div className="mt-4 flex gap-1 justify-center">
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                </div>
+              </div>
+            )}
+
+            {step === 1 && (
+              <div className="text-center pt-2 border-t border-gray-100">
+                <p className="text-sm text-gray-400">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-primary-600 hover:text-primary-700 font-semibold transition-colors"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

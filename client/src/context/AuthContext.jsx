@@ -35,6 +35,12 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, role) => {
     const res = await api.post("/auth/register", { email, password, role });
+    // Token and user are no longer returned here, just success message
+    return res.data;
+  };
+
+  const verifyRegistration = async (email, otp) => {
+    const res = await api.post("/auth/verify-registration", { email, otp });
     localStorage.setItem("token", res.data.token);
     setUser(res.data.user);
     return res.data;
@@ -46,8 +52,23 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const forgotPassword = async (email) => {
+    const res = await api.post("/auth/forgot-password", { email });
+    return res.data;
+  };
+
+  const verifyOTP = async (email, otp) => {
+    const res = await api.post("/auth/verify-otp", { email, otp });
+    return res.data;
+  };
+
+  const resetPassword = async (email, otp, newPassword) => {
+    const res = await api.post("/auth/reset-password", { email, otp, newPassword });
+    return res.data;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, verifyRegistration, logout, forgotPassword, verifyOTP, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
