@@ -3,7 +3,7 @@ import { Users, Briefcase, CheckCircle } from "lucide-react";
 
 const stats = [
   { label: "Active Seekers", value: "10+", icon: Users, color: "from-blue-500 to-blue-600", iconBg: "bg-blue-100", iconColor: "text-blue-600" },
-  { label: "Internships Posted", value: "10+", icon: Briefcase, color: "from-purple-500 to-purple-600", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
+  { label: "Jobs Posted", value: "10+", icon: Briefcase, color: "from-purple-500 to-purple-600", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
   { label: "Successful Hires", value: "10+", icon: CheckCircle, color: "from-green-500 to-green-600", iconBg: "bg-green-100", iconColor: "text-green-600" },
 ];
 

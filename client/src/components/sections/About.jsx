@@ -68,7 +68,7 @@ const About = () => {
         {/* Centered Header */}
         <div className={`text-center max-w-3xl mx-auto mb-16 transform transition-all duration-700 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Why Choose <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Skills2Career</span>?
+            Why Choose <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">CareerBridge</span>?
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed">
             We bridge the gap between academic talent and industry needs with a platform built for precision, speed, and trust.

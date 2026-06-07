@@ -36,7 +36,7 @@ const Contact = () => {
               </div>
             </div>
             <a href="mailto:support@skills2career.lk" className="text-2xl font-bold text-white hover:text-primary-300 transition-colors break-all">
-              support@skills2career.lk
+              support@careerbridge.lk
             </a>
           </div>
         </div>

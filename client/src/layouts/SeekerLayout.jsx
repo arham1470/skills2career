@@ -43,14 +43,14 @@ const SeekerLayout = () => {
     ];
 
     return (
-        <div className="h-screen bg-gray-50 flex overflow-hidden">
+        <div className="h-screen bg-gray-50 flex overflow-hidden print:h-auto print:overflow-visible print:bg-white">
             {/* Mobile Overlay */}
             {sidebarOpen && (
                 <div className="fixed inset-0 bg-black/40 z-40 lg:hidden" onClick={() => setSidebarOpen(false)}></div>
             )}
 
             {/* Sidebar */}
-            <aside className={`fixed top-0 left-0 z-50 h-screen w-72 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+            <aside className={`print:hidden fixed top-0 left-0 z-50 h-screen w-72 bg-white border-r border-gray-200 flex flex-col transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
                 <div className="p-4 border-b border-gray-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <img src={logo} alt="Skills2Career" className="h-20 w-auto" />
@@ -123,8 +123,8 @@ const SeekerLayout = () => {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden lg:ml-72">
-                <header className="flex-shrink-0 sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden lg:ml-72 print:ml-0 print:overflow-visible">
+                <header className="print:hidden flex-shrink-0 sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
                     <button className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg" onClick={() => setSidebarOpen(true)}>
                         <Menu className="w-5 h-5" />
                     </button>
@@ -145,7 +145,7 @@ const SeekerLayout = () => {
                     </div>
                 </header>
 
-                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col print:p-0 print:overflow-visible print:block">
                     <Outlet />
                 </main>
             </div>

@@ -51,7 +51,7 @@ const Trending = () => {
       <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="section-title">Trending Opportunities</h2>
-          <p className="section-subtitle">Discover the latest internships. Higher match percentages indicate stronger role compatibility.</p>
+          <p className="section-subtitle">Discover the latest jobs. Higher match percentages indicate stronger role compatibility.</p>
         </div>
 
         {loading ? (
@@ -106,7 +106,7 @@ const Trending = () => {
 
             <div className="text-center mt-10">
               <Button variant="secondary" onClick={() => navigate("/internships")}>
-                View All Internships
+                View All Jobs
               </Button>
             </div>
           </>

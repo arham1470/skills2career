@@ -33,11 +33,11 @@ const Hero = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.15]">
               Launch Your Career with{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-purple-400">
-                Skills2Career
+                CareerBridge
               </span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 max-w-lg leading-relaxed">
-              The intelligent internship platform that matches your skills with real industry opportunities. Faster hiring. Better fits. Zero noise.
+              The intelligent job platform that matches your skills with real industry opportunities. Faster hiring. Better fits. Zero noise.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <Link to="/role-select">

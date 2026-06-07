@@ -270,14 +270,31 @@ const Resume = () => {
             .resume-preview-scroll::-webkit-scrollbar-thumb:hover { background-color: #9ca3af; }
             .resume-preview-scroll { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
             @media print {
-              @page { margin: 0; size: auto; }
-              body { background: white !important; }
+              @page { 
+                margin: 0; 
+                margin-top: 1cm; 
+                size: auto; 
+              }
+              @page :first { 
+                margin-top: 0; 
+              }
+              body { 
+                background: white !important; 
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
+              * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                scrollbar-width: none !important;
+              }
+              ::-webkit-scrollbar {
+                display: none !important;
+              }
               html, body { margin: 0 !important; padding: 0 !important; }
               .resume-preview-scroll { max-height: none !important; overflow: visible !important; }
               .print-resume-page { border: none !important; box-shadow: none !important; border-radius: 0 !important; }
-              .print-sidebar { min-height: 100vh !important; }
-              .print-hide-interests { display: none !important; }
-              .print-hide-availability { display: none !important; }
+              .print-sidebar { min-height: 100vh !important; background-color: #f9fafb !important; }
             }
           `}</style>
           <div className="max-h-[80vh] overflow-y-auto resume-preview-scroll print:max-h-none print:overflow-visible">
@@ -295,7 +312,7 @@ const Resume = () => {
                 </div>
 
                 {/* Contact */}
-                <div>
+                <div className="print:break-inside-avoid">
                   <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Contact</h3>
                   <div className="space-y-3 text-sm text-gray-700">
                     {form.address && (
@@ -320,7 +337,7 @@ const Resume = () => {
                 </div>
 
                 {/* Skills */}
-                <div>
+                <div className="print:break-inside-avoid">
                   <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Skills</h3>
                   {(form.coreSkills || []).length > 0 && (
                     <div className="mb-3">
@@ -367,7 +384,7 @@ const Resume = () => {
                 </div>
 
                 {/* Languages */}
-                <div>
+                <div className="print:break-inside-avoid">
                   <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Languages</h3>
                   <ul className="space-y-2 text-sm text-gray-700">
                     {(form.languages || []).length > 0 ? (
@@ -387,7 +404,7 @@ const Resume = () => {
                 </div>
 
                 {/* Interests */}
-                <div className="print-hide-interests">
+                <div className="print-hide-interests print:break-inside-avoid">
                   <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Interests</h3>
                   <ul className="space-y-2 text-sm text-gray-700">
                     {(form.interests || []).length > 0 ? (
@@ -404,7 +421,7 @@ const Resume = () => {
                 </div>
 
                 {/* Availability */}
-                <div className="print-hide-availability">
+                <div className="print-hide-availability print:break-inside-avoid">
                   <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Availability</h3>
                   <p className="text-sm text-gray-700">{form.availability}</p>
                 </div>
@@ -422,8 +439,8 @@ const Resume = () => {
 
                 {/* Profile */}
                 {form.summary && (
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-3">Profile</h3>
+                  <div className="print:break-inside-avoid">
+                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-3 print:break-after-avoid">Profile</h3>
                     <p className="text-sm text-gray-700 leading-relaxed text-justify">{form.summary}</p>
                   </div>
                 )}
@@ -431,10 +448,10 @@ const Resume = () => {
                 {/* Work Experience */}
                 {form.experience?.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Work Experience</h3>
+                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4 print:break-after-avoid">Work Experience</h3>
                     <div className="space-y-5">
                       {form.experience.map((exp, i) => (
-                        <div key={i}>
+                        <div key={i} className="print:break-inside-avoid">
                           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
                             <h4 className="font-bold text-gray-900 uppercase text-sm">{exp.role}</h4>
                             <span className="text-xs text-gray-500 font-medium">
@@ -452,10 +469,10 @@ const Resume = () => {
                 {/* Education */}
                 {form.education?.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Education</h3>
+                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4 print:break-after-avoid">Education</h3>
                     <div className="space-y-5">
                       {form.education.map((edu, i) => (
-                        <div key={i}>
+                        <div key={i} className="print:break-inside-avoid">
                           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
                             <h4 className="font-bold text-gray-900 text-sm">
                               {edu.qualificationLevel}
@@ -475,10 +492,10 @@ const Resume = () => {
                 {/* Projects */}
                 {form.projects?.length > 0 && form.projects.some(p => p.title) && (
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Projects</h3>
+                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4 print:break-after-avoid">Projects</h3>
                     <div className="space-y-5">
                       {form.projects.filter(p => p.title).map((proj, i) => (
-                        <div key={i}>
+                        <div key={i} className="print:break-inside-avoid">
                           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
                             <h4 className="font-bold text-gray-900 text-sm">{proj.title}</h4>
                             <span className="text-xs text-gray-500 font-medium">
@@ -501,10 +518,10 @@ const Resume = () => {
                 {/* Certificates */}
                 {certificates.length > 0 && (
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">Certificates</h3>
+                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4 print:break-after-avoid">Certificates</h3>
                     <div className="space-y-4">
                       {certificates.map((cert, i) => (
-                        <div key={i}>
+                        <div key={i} className="print:break-inside-avoid">
                           <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
                             <h4 className="font-bold text-gray-900 text-sm">{cert.name}</h4>
                             <span className="text-xs text-gray-500 font-medium">
@@ -529,10 +546,10 @@ const Resume = () => {
                 {/* References */}
                 {form.references?.length > 0 && form.references.some(r => r.name) && (
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4">References</h3>
+                    <h3 className="text-lg font-bold text-gray-900 uppercase tracking-wide border-b-2 border-gray-900 pb-1 mb-4 print:break-after-avoid">References</h3>
                     <div className="space-y-5">
                       {form.references.filter(r => r.name).map((ref, i) => (
-                        <div key={i}>
+                        <div key={i} className="print:break-inside-avoid">
                           <h4 className="font-bold text-gray-900 text-sm">{ref.name}</h4>
                           <p className="text-sm text-gray-600 italic mt-0.5">{ref.relationship}{ref.company ? `, ${ref.company}` : ""}</p>
                           <div className="mt-2 space-y-1 text-sm text-gray-700">
