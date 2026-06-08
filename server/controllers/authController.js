@@ -103,13 +103,13 @@ exports.register = async (req, res) => {
 </body>
 </html>`;
 
-    await sendEmail({
-      email: user.email,
-      subject: "Welcome to CareerBridge - Verify Your Account",
-      message: `Your verification OTP is ${otp}`,
-      html: emailHtml,
-      attachments: [{ filename: 'logo.png', path: path.join(__dirname, '../../client/src/assets/logo.png'), cid: 'careerbridgelogo' }]
-    });
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: "Welcome to CareerBridge - Verify Your Account",
+    //   message: `Your verification OTP is ${otp}`,
+    //   html: emailHtml,
+    //   attachments: [{ filename: 'logo.png', path: path.join(__dirname, '../../client/src/assets/logo.png'), cid: 'careerbridgelogo' }]
+    // });
 
     res.status(201).json({ message: "Verification OTP sent to email." });
   } catch (error) {
