@@ -4,7 +4,7 @@ import { LayoutDashboard, Users, Briefcase, Settings, Menu, X, LogOut, ShieldChe
 import { useAuth } from "../context/AuthContext";
 import Button from "../components/ui/Button";
 import ConfirmModal from "../components/ui/ConfirmModal";
-import logo from "../assets/zzlogo.png";
+import logo from "../assets/logo.png";
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

@@ -6,7 +6,7 @@ import Button from "../components/ui/Button";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import api from "../utils/api";
 import { getImageUrl } from "../utils/getImageUrl";
-import logo from "../assets/zzlogo.png";
+import logo from "../assets/logo.png";
 
 const EmployerLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
