@@ -257,11 +257,20 @@ exports.getDashboardStats = async (req, res) => {
       }).length;
     }
 
+    // Check if only preferences fields are done (without certificates)
+    // Used by frontend to smart-route Step 5 (Preferences vs Certificates)
+    const preferencesFieldsDone =
+      (profile?.preferences?.categories?.length || 0) > 0 &&
+      (profile?.preferences?.workingMode?.length || 0) > 0 &&
+      !!profile?.preferences?.expectedSalary &&
+      (profile?.preferences?.preferredLocations?.length || 0) > 0;
+
     res.status(200).json({
       profileCompletion,
       totalApplications,
       shortlisted,
-      skillMatches
+      skillMatches,
+      preferencesFieldsDone
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch dashboard stats", error: error.message });

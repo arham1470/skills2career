@@ -42,6 +42,7 @@ const Dashboard = () => {
     totalApplications: 0,
     shortlisted: 0,
     skillMatches: 0,
+    preferencesFieldsDone: false,
   });
   const [trendingSkills, setTrendingSkills] = useState([]);
   const [recentJobs, setRecentJobs] = useState([]);
@@ -96,7 +97,7 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <ProfileTimeline completion={stats.profileCompletion} />
+      <ProfileTimeline completion={stats.profileCompletion} preferencesFieldsDone={stats.preferencesFieldsDone} />
 
       {!loading && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

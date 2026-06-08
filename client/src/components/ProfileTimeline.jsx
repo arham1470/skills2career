@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { User, FileText, Zap, GraduationCap, Settings, Check, BadgeCheck, ArrowRight } from "lucide-react";
 
 const steps = [
-  { label: "Profile", icon: User, route: "/seeker/profile" },
+  { label: "Profile", icon: User, route: "/seeker/resume" },
   { label: "Resume", icon: FileText, route: "/seeker/resume" },
   { label: "Skills", icon: Zap, route: "/seeker/resume" },
   { label: "Experience", icon: GraduationCap, route: "/seeker/resume" },
-  { label: "Preferences", icon: Settings, route: "/seeker/preferences" },
+  { label: "Preferences", icon: Settings, route: "/seeker/preferences" }, // route overridden dynamically for step 5
 ];
 
 const getStepState = (index, completion) => {
@@ -17,10 +17,19 @@ const getStepState = (index, completion) => {
   return "pending";
 };
 
-const ProfileTimeline = ({ completion = 0 }) => {
+const ProfileTimeline = ({ completion = 0, preferencesFieldsDone = false }) => {
   const navigate = useNavigate();
   const isComplete = completion >= 100;
   const currentIndex = steps.findIndex((_, i) => getStepState(i, completion) === "current");
+
+  // Smart route for Step 5: if preferences fields are filled but certificates missing,
+  // redirect to /seeker/certificates instead of /seeker/preferences
+  const getRoute = (index) => {
+    if (index === 4) {
+      return preferencesFieldsDone ? "/seeker/certificates" : "/seeker/preferences";
+    }
+    return steps[index].route;
+  };
 
   if (isComplete) return null;
 
@@ -53,7 +62,7 @@ const ProfileTimeline = ({ completion = 0 }) => {
             const Icon = step.icon;
             const isLast = index === steps.length - 1;
             return (
-              <div key={step.label} className="flex items-start gap-3 group cursor-pointer" onClick={() => navigate(step.route)}>
+              <div key={step.label} className="flex items-start gap-3 group cursor-pointer" onClick={() => navigate(getRoute(index))}>
                 {/* Left: circle + vertical connector */}
                 <div className="flex flex-col items-center shrink-0">
                   <div className={`w-9 h-9 flex items-center justify-center rounded-full transition-all duration-300 relative ${
@@ -96,7 +105,7 @@ const ProfileTimeline = ({ completion = 0 }) => {
               <React.Fragment key={step.label}>
                 <div
                   className="flex flex-col items-center gap-2 cursor-pointer group min-w-[64px] flex-shrink-0"
-                  onClick={() => navigate(step.route)}
+                  onClick={() => navigate(getRoute(index))}
                 >
                   <div className={`relative w-11 h-11 flex items-center justify-center rounded-full transition-all duration-300 ${
                     state === "completed"
@@ -151,7 +160,7 @@ const ProfileTimeline = ({ completion = 0 }) => {
               </p>
             </div>
             <button
-              onClick={() => navigate(steps[currentIndex].route)}
+              onClick={() => navigate(getRoute(currentIndex))}
               className="text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 px-4 py-2 rounded-lg transition-colors shadow-sm shadow-primary-500/20 flex-shrink-0 inline-flex items-center gap-1"
             >
               Continue
