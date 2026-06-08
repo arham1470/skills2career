@@ -7,7 +7,7 @@ import ConfirmModal from "../components/ui/ConfirmModal";
 import { MessageSquare } from "lucide-react";
 import api from "../utils/api";
 import { getImageUrl } from "../utils/getImageUrl";
-import logo from "../assets/logo.png";
+import logo from "../assets/logoD.png";
 
 const SeekerLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
