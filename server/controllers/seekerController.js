@@ -5,8 +5,7 @@ const Internship = require("../models/Internship");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 const Notification = require("../models/Notification");
-const fs = require("fs");
-const path = require("path");
+const { cloudinary } = require("../middleware/upload");
 
 exports.getProfile = async (req, res) => {
   try {
@@ -35,7 +34,7 @@ exports.updateProfile = async (req, res) => {
 exports.uploadProfileImage = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-    const imageUrl = `/uploads/profiles/${req.file.filename}`;
+    const imageUrl = req.file.path; // Cloudinary URL
     await SeekerProfile.findOneAndUpdate({ user: req.user.id }, { profileImage: imageUrl }, { upsert: true });
     res.status(200).json({ message: "Image uploaded successfully", imageUrl });
   } catch (error) {
@@ -103,7 +102,8 @@ exports.uploadCertificate = async (req, res) => {
       description,
       issuedDate,
       fileName: req.file.originalname,
-      filePath: `/uploads/certificates/${req.file.filename}`
+      filePath: req.file.path, // Cloudinary URL
+      cloudinaryPublicId: req.file.filename // store for deletion
     };
     const profile = await SeekerProfile.findOneAndUpdate(
       { user: req.user.id },
@@ -123,8 +123,10 @@ exports.deleteCertificate = async (req, res) => {
     const cert = profile.certificates.id(id);
     if (!cert) return res.status(404).json({ message: "Certificate not found" });
 
-    const fullPath = path.join(__dirname, "..", cert.filePath);
-    if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+    // Delete from Cloudinary if public ID exists
+    if (cert.cloudinaryPublicId) {
+      await cloudinary.uploader.destroy(cert.cloudinaryPublicId, { resource_type: "raw" });
+    }
 
     profile.certificates.pull(id);
     await profile.save();
@@ -149,7 +151,8 @@ exports.uploadCV = async (req, res) => {
     if (!req.file) return res.status(400).json({ message: "CV file is required" });
     const cvData = {
       fileName: req.file.originalname,
-      filePath: `/uploads/cv/${req.file.filename}`,
+      filePath: req.file.path, // Cloudinary URL
+      cloudinaryPublicId: req.file.filename, // store for deletion
       uploadedAt: new Date()
     };
     await SeekerProfile.findOneAndUpdate(
@@ -394,27 +397,27 @@ exports.deleteAccount = async (req, res) => {
 
     const userId = req.user.id;
 
-    // Get student profile to delete certificate files
-    const profile = await StudentProfile.findOne({ user: userId });
+    // Get seeker profile to delete files from Cloudinary
+    const profile = await SeekerProfile.findOne({ user: userId });
     if (profile) {
-      // Delete certificate files
+      // Delete certificate files from Cloudinary
       if (profile.certificates && profile.certificates.length > 0) {
-        profile.certificates.forEach((cert) => {
-          if (cert.filePath) {
-            const fullPath = path.join(__dirname, "..", cert.filePath);
-            if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+        for (const cert of profile.certificates) {
+          if (cert.cloudinaryPublicId) {
+            await cloudinary.uploader.destroy(cert.cloudinaryPublicId, { resource_type: "raw" }).catch(() => {});
           }
-        });
+        }
       }
-      // Delete CV file
-      if (profile.cvFile?.filePath) {
-        const cvPath = path.join(__dirname, "..", profile.cvFile.filePath);
-        if (fs.existsSync(cvPath)) fs.unlinkSync(cvPath);
+      // Delete CV file from Cloudinary
+      if (profile.cvFile?.cloudinaryPublicId) {
+        await cloudinary.uploader.destroy(profile.cvFile.cloudinaryPublicId, { resource_type: "raw" }).catch(() => {});
       }
-      // Delete profile image
+      // Delete profile image from Cloudinary
       if (profile.profileImage) {
-        const imgPath = path.join(__dirname, "..", profile.profileImage);
-        if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+        // Extract public ID from Cloudinary URL
+        const parts = profile.profileImage.split("/");
+        const publicId = "skills2career/profiles/" + parts[parts.length - 1].split(".")[0];
+        await cloudinary.uploader.destroy(publicId).catch(() => {});
       }
     }
 

@@ -73,16 +73,6 @@ app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use("/api/", apiLimiter);
 app.use("/api/auth/", authLimiter);
 
-// Static Files
-app.use(
-  "/uploads",
-  (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-  },
-  express.static(path.join(__dirname, "uploads"))
-);
-
 // Routes
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);

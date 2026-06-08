@@ -1,6 +1,7 @@
 const CompanyProfile = require("../models/CompanyProfile");
 const Internship = require("../models/Internship");
 const Application = require("../models/Application");
+const { cloudinary } = require("../middleware/upload");
 
 exports.getProfile = async (req, res) => {
   try {
@@ -51,7 +52,7 @@ exports.uploadLogo = async (req, res) => {
       });
     }
 
-    const logoUrl = `/uploads/companies/${req.file.filename}`;
+    const logoUrl = req.file.path; // Cloudinary URL
     await CompanyProfile.findOneAndUpdate({ user: req.user.id }, { logo: logoUrl }, { upsert: true });
     res.status(200).json({ message: "Logo uploaded successfully", logoUrl });
   } catch (error) {
