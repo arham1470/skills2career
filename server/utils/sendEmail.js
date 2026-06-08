@@ -16,7 +16,7 @@ const sendEmail = async (options) => {
 
     sendSmtpEmail.sender = {
       name: "CareerBridge",
-      email: "your_verified_email@gmail.com"
+      email: "dark1a1devil@gmail.com"
     };
 
     sendSmtpEmail.to = [
@@ -31,7 +31,9 @@ const sendEmail = async (options) => {
     return true;
 
   } catch (error) {
-    console.error("Brevo email error:", error);
+    console.error("Brevo email error:");
+    console.error(error);
+    console.error(error.response?.body);
     return false;
   }
 };
