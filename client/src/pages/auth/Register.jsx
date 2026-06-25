@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Home, Mail, Lock, KeyRound, Sparkles, UserPlus, ArrowRight, Briefcase, Globe, Award, FileText, CheckCircle } from "lucide-react";
+import { Home, Mail, Lock, KeyRound, Sparkles, UserPlus, ArrowRight, Briefcase, Globe, Award, FileText, CheckCircle, Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
   const [searchParams] = useSearchParams();
@@ -14,6 +14,8 @@ const Register = () => {
   const inputRefs = useRef([]);
 
   const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -225,14 +227,21 @@ const Register = () => {
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       required
                       value={form.password}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
+                      className="w-full pl-11 pr-11 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
                       placeholder="Min. 6 characters"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                 </div>
 
@@ -241,14 +250,21 @@ const Register = () => {
                   <div className="relative">
                     <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <input
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       name="confirmPassword"
                       required
                       value={form.confirmPassword}
                       onChange={handleChange}
-                      className="w-full pl-11 pr-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
+                      className="w-full pl-11 pr-11 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 outline-none transition-all text-gray-900 placeholder-gray-400"
                       placeholder="Repeat your password"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
                   </div>
                 </div>
 
