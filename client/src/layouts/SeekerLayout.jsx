@@ -34,7 +34,7 @@ const SeekerLayout = () => {
         { label: "My Applications", path: "/seeker/applications", icon: Briefcase, active: true },
         { label: "Messages", path: "/seeker/chat", icon: MessageSquare, active: true },
         { label: "Resume", path: "/seeker/resume", icon: FileText, active: true },
-        { label: "Curriculum Vitae", path: "/seeker/cv", icon: FilePlus, active: true },
+        // { label: "Curriculum Vitae", path: "/seeker/cv", icon: FilePlus, active: true },
         { label: "Recommended", path: "/seeker/recommended", icon: Bookmark, active: true },
         { label: "Career Quiz", path: "/seeker/career-quiz", icon: Sparkles, active: true },
         { label: "Preferences", path: "/seeker/preferences", icon: MapPin, active: true },

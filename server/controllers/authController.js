@@ -103,13 +103,13 @@ exports.register = async (req, res) => {
 </body>
 </html>`;
 
-    // await sendEmail({
-    //   email: user.email,
-    //   subject: "Welcome to CareerBridge - Verify Your Account",
-    //   message: `Your verification OTP is ${otp}`,
-    //   html: emailHtml,
-    //   attachments: [{ filename: 'logo.png', path: path.join(__dirname, '../../client/src/assets/logo.png'), cid: 'careerbridgelogo' }]
-    // });
+    await sendEmail({
+      email: user.email,
+      subject: "Welcome to CareerBridge - Verify Your Account",
+      message: `Your verification OTP is ${otp}`,
+      html: emailHtml,
+      attachments: [{ filename: 'logo.png', path: path.join(__dirname, '../../client/src/assets/logo.png'), cid: 'careerbridgelogo' }]
+    });
 
     res.status(201).json({ message: "Verification OTP sent to email." });
   } catch (error) {
@@ -123,8 +123,8 @@ exports.verifyRegistration = async (req, res) => {
 
     const user = await User.findOne({
       email,
-      // verificationOTP: otp,
-      // verificationExpires: { $gt: Date.now() },
+      verificationOTP: otp,
+      verificationExpires: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -157,9 +157,9 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // if (!user.isVerified) {
-    //   return res.status(401).json({ message: "Please verify your email to log in." });
-    // }
+    if (!user.isVerified) {
+      return res.status(401).json({ message: "Please verify your email to log in." });
+    }
 
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {

@@ -1,106 +1,109 @@
-# Skills2Career 🚀
+# Skills2Career (CareerBridge) 🚀
 
-> A MERN stack internship platform connecting seekers with employers
+> A comprehensive MERN stack internship platform seamlessly connecting IT students with tech employers through automated skill matching and real-time communication.
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
 ![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=flat-square&logo=node.js)
 ![MongoDB](https://img.shields.io/badge/MongoDB-6.0-47A248?style=flat-square&logo=mongodb)
+![Socket.io](https://img.shields.io/badge/Socket.io-Live_Chat-010101?style=flat-square&logo=socket.io)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
 ## 📋 Table of Contents
 
 - [Overview](#overview)
-- [Features](#features)
+- [Key Features](#key-features)
 - [Tech Stack](#tech-stack)
+- [User Roles](#user-roles)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [Scripts](#scripts)
-- [API Endpoints](#api-endpoints)
-- [User Roles](#user-roles)
+- [API Architecture](#api-architecture)
 - [License](#license)
 
 ---
 
 ## 🎯 Overview
 
-Skills2Career is a full-stack web application designed to help job seekers find internships and employers post opportunities. The platform supports three user roles: **Seekers**, **Employers**, and **Admins**.
+**Skills2Career** (also known as CareerBridge) is a full-stack web application designed to solve the disconnect between students seeking internships and companies looking for talent. The platform features an advanced **Weighted Skill-Matching Algorithm**, a built-in **Career Assessment Tool**, **Automated Resume Building**, and **Real-time Chat**. 
+
+It supports three core user roles: **Seekers (Students)**, **Employers**, and **Admins**.
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-### For Seekers
-- ✅ Browse and filter internships
-- ✅ Apply to internships
-- ✅ Upload CV and certificates
-- ✅ Career quiz for recommendations
-- ✅ Track applications
-- ✅ Chat with employers
+### 🎓 For Seekers (Students)
+- **Weighted Skill Matching:** Automatically matches internships to your profile using a proprietary algorithm (75% core skills, 25% additional skills).
+- **Automated Resume Builder:** A 5-step profile completion timeline automatically generates a professional digital resume.
+- **Career Assessment Quiz:** A built-in pathway tool that recommends the best career choices and relevant courses based on current qualifications.
+- **Media Management:** Securely upload profile pictures, PDF CVs, and certificates (Powered by Cloudinary).
+- **Application Tracking:** Track application status (Pending, Shortlisted, Selected) and manage scheduled Walk-in/Zoom interviews.
 
-### For Employers
-- ✅ Post and manage internships
-- ✅ Review applications
-- ✅ Schedule interviews
-- ✅ Search candidates
-- ✅ Manage company profile
-- ✅ Real-time chat with applicants
+### 💼 For Employers
+- **Company Verification:** Secure onboarding requiring Admin verification before posting jobs.
+- **Smart Candidate Search:** Instantly see the "Match %" of applicants based on how well their skills align with your internship requirements.
+- **Interview Scheduling:** Schedule interviews and notify candidates instantly.
+- **Real-Time Messaging:** Chat directly with shortlisted candidates via a live WebSocket connection.
 
-### For Admins
-- ✅ Manage users
-- ✅ Manage internships
-- ✅ Verify companies
-- ✅ Platform settings
+### 🛡️ For Admins
+- **Platform Management:** Oversee and suspend users, verify company profiles, and manage active/draft/closed internships.
+- **Academic Ecosystem:** Manage system-wide institutions and courses for the Career Pathway tool.
 
-### General
-- 💬 Real-time notifications (Socket.io)
-- 🔐 JWT authentication
-- 📱 Responsive design (Tailwind CSS)
-- 🗄️ File uploads (profiles, CVs, certificates)
+### 🔧 System-Wide
+- **Secure Authentication:** JWT-based sessions with 6-digit email OTP verification via Nodemailer.
+- **Real-Time Sync:** Socket.io infrastructure for instant chat messages and in-app notifications.
 
 ---
 
 ## 🛠 Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| **Frontend** | React 18, Vite, Tailwind CSS, React Router |
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB with Mongoose |
-| **Real-time** | Socket.io |
-| **Authentication** | JWT (JSON Web Tokens) |
-| **File Upload** | Multer |
+| Category | Technology | Purpose |
+|----------|------------|---------|
+| **Frontend** | React 18, Vite, Tailwind CSS | High-performance SPA with a responsive utility-first UI. |
+| **Backend** | Node.js, Express.js | Robust, non-blocking REST API architecture. |
+| **Database** | MongoDB & Mongoose | Flexible NoSQL document storage with strict schema validation. |
+| **Real-time** | Socket.io | Bi-directional communication for live chat. |
+| **File Storage**| Cloudinary | Secure cloud hosting for images and PDF resumes. |
+| **Mailing** | Nodemailer | Handling transactional emails (OTPs, password resets). |
+| **Security** | JWT, bcryptjs | Encrypted passwords and secure stateless authentication. |
+
+---
+
+## 👥 User Roles
+
+| Role | Access Level |
+|------|--------------|
+| **Seeker** | Browse jobs, take career quizzes, build resume, apply, and chat with employers. |
+| **Employer** | Post internships, manage applications, filter candidates by skills, and schedule interviews. |
+| **Admin** | Full platform oversight, user management, company verification, and content moderation. |
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 skills2career/
-├── client/                    # React Frontend
+├── client/                    # React Frontend (Vite)
 │   ├── src/
-│   │   ├── components/        # Reusable UI components
-│   │   ├── contexts/          # React Context providers
+│   │   ├── components/        # Reusable UI components (Modals, Buttons)
+│   │   ├── contexts/          # React Context (Auth, Socket)
 │   │   ├── hooks/             # Custom React hooks
-│   │   ├── layouts/            # Page layouts by role
-│   │   ├── pages/              # Route pages
-│   │   └── utils/              # Helper functions
-│   └── ...
+│   │   ├── layouts/           # Role-specific wrappers (Seeker/Employer/Admin)
+│   │   ├── pages/             # Route views (Dashboard, Auth, etc.)
+│   │   └── utils/             # API clients (Axios instance)
 │
-├── server/                    # Node.js Backend
-│   ├── config/                # Database config
-│   ├── controllers/           # Request handlers
-│   ├── middleware/            # Auth, error handling
+├── server/                    # Node.js Backend (Express)
+│   ├── config/                # Database and Cloudinary configuration
+│   ├── controllers/           # Business logic (Auth, Seeker, Employer)
+│   ├── middleware/            # JWT verification, Role Guards, Multer
 │   ├── models/                # Mongoose schemas
-│   ├── routes/                # API routes
-│   ├── scripts/               # Utility scripts
-│   ├── socket/                # Socket.io setup
-│   └── uploads/               # File storage
+│   ├── routes/                # API endpoints
+│   ├── socket/                # Socket.io event listeners
+│   └── utils/                 # Helpers (sendEmail via Nodemailer)
 │
-├── admin.md                   # Admin documentation
-├── passwords.md               # Credentials reference
-├── structure.md              # Detailed project structure
-└── workflow.md               # Development workflow
+└── .env                       # Environment variables
 ```
 
 ---
@@ -108,10 +111,10 @@ skills2career/
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js 20+
-- MongoDB (local or Atlas)
-- npm or yarn
+- **Node.js** 20+
+- **MongoDB** (Local instance or MongoDB Atlas)
+- **Cloudinary Account** (For file uploads)
+- **Google App Password** (For Nodemailer SMTP)
 
 ### Installation
 
@@ -121,36 +124,28 @@ skills2career/
    cd skills2career
    ```
 
-2. **Install backend dependencies**
+2. **Install Backend Dependencies**
    ```bash
    cd server
    npm install
    ```
 
-3. **Install frontend dependencies**
+3. **Install Frontend Dependencies**
    ```bash
-   cd client
+   cd ../client
    npm install
    ```
 
-4. **Configure environment variables**
-   ```bash
-   # server/.env
-   PORT=5000
-   MONGO_URI=mongodb://localhost:27017/skills2career
-   JWT_SECRET=your-secret-key
-   NODE_ENV=development
-   ```
+4. **Configure Environment Variables** (See below)
 
-5. **Start the servers**
+5. **Start the Servers**
 
-   **Development mode (both concurrently):**
+   *Run concurrently from the root (if set up):*
    ```bash
-   # From root directory
    npm run dev
    ```
 
-   **Or run separately:**
+   *Or run separately in two terminals:*
    ```bash
    # Terminal 1 - Backend
    cd server
@@ -161,106 +156,83 @@ skills2career/
    npm run dev
    ```
 
-6. **Open the app**
-   - Frontend: http://localhost:5173
-   - Backend API: http://localhost:5000
+6. **Access the App**
+   - Frontend: `http://localhost:5173`
+   - Backend API: `http://localhost:5000`
 
 ---
 
 ## 🔒 Environment Variables
 
-Create a `.env` file in the `server/` directory:
+Create a `.env` file in the `server/` directory with the following keys:
 
 ```env
+# Server
 PORT=5000
-MONGO_URI=mongodb://localhost:27017/skills2career
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
 NODE_ENV=development
+
+# Database
+MONGO_URI=mongodb://127.0.0.1:27017/skills2career
+
+# Authentication
+JWT_SECRET=your_super_secret_jwt_key
+JWT_EXPIRE=7d
+
+# Nodemailer / Email Setup (SMTP)
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_google_app_password
+
+# Cloudinary Setup
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
 ---
 
 ## 📜 Scripts
 
-### Root (`package.json`)
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Run both frontend and backend in development mode |
-
 ### Client (`client/package.json`)
 | Script | Description |
 |--------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npm run lint` | Run ESLint |
+| `npm run dev` | Start Vite development server |
+| `npm run build` | Build optimized production bundle |
+| `npm run lint` | Run ESLint to find issues |
 
 ### Server (`server/package.json`)
 | Script | Description |
 |--------|-------------|
-| `npm run dev` | Start Express dev server |
-| `npm run seed` | Seed database with sample data |
-| `npm run reset-password` | Reset a user's password |
+| `npm run dev` | Start Express server with Nodemon for hot-reloading |
+| `npm start` | Start Node server (Production) |
+| `npm run seed` | Seed database with initial roles/data |
 
 ---
 
-## 🔗 API Endpoints
+## 🔗 API Architecture (Key Endpoints)
 
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
+### Authentication (`/api/auth`)
+- `POST /register` - Register user & dispatch OTP
+- `POST /verify-otp` - Verify account
+- `POST /login` - Issue JWT
+- `POST /forgot-password` - Request password reset
 
-### Internships
-- `GET /api/internship` - List all internships
-- `POST /api/internship` - Create internship (employer)
-- `PUT /api/internship/:id` - Update internship
-- `DELETE /api/internship/:id` - Delete internship
+### Seekers (`/api/seeker`)
+- `GET /profile` - Retrieve full resume & match scores
+- `PUT /profile` - Update details (handles Cloudinary media)
+- `POST /assessment` - Submit career quiz
 
-### Applications
-- `POST /api/application` - Submit application
-- `GET /api/application` - Get applications
-- `PUT /api/application/:id` - Update application status
+### Employers (`/api/employer`)
+- `POST /internship` - Publish a job post
+- `GET /applications` - View all applicant match scores
 
-### Users & Profiles
-- `GET /api/seeker` - Seeker endpoints
-- `PUT /api/seeker/profile` - Update seeker profile
-- `GET /api/candidate` - Search candidates
-- `GET /api/company` - Company endpoints
-
-### Admin
-- `GET /api/admin/users` - Manage users
-- `GET /api/admin/internships` - Manage internships
-- `POST /api/admin/verify-company` - Verify company
-
-### Real-time
-- `Socket.io` - Chat and notifications
-
----
-
-## 👥 User Roles
-
-| Role | Access Level |
-|------|--------------|
-| **Seeker** | Browse jobs, apply, manage profile, chat |
-| **Employer** | Post jobs, manage applications, search candidates, chat |
-| **Admin** | Full platform access, user management, verification |
+### Real-time (`Socket.io`)
+- `join_room`, `send_message`, `receive_message`
 
 ---
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This project is licensed under the MIT License.
 
 ---
 

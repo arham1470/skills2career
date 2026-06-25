@@ -1,39 +1,29 @@
-const brevo = require('@getbrevo/brevo');
+const nodemailer = require("nodemailer");
 
 const sendEmail = async (options) => {
   try {
-    const apiInstance = new brevo.TransactionalEmailsApi();
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_APP_PASSWORD,
+      },
+    });
 
-    apiInstance.setApiKey(
-      brevo.TransactionalEmailsApiApiKeys.apiKey,
-      process.env.BREVO_API_KEY
-    );
-
-    const sendSmtpEmail = new brevo.SendSmtpEmail();
-
-    sendSmtpEmail.subject = options.subject;
-    sendSmtpEmail.htmlContent = options.html || options.message;
-
-    sendSmtpEmail.sender = {
-      name: "CareerBridge",
-      email: "dark1a1devil@gmail.com"
+    const mailOptions = {
+      from: `CareerBridge <${process.env.EMAIL_USER}>`,
+      to: options.email,
+      subject: options.subject,
+      text: options.message,
+      html: options.html,
+      attachments: options.attachments,
     };
 
-    sendSmtpEmail.to = [
-      {
-        email: options.email
-      }
-    ];
-
-    const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
-
-    console.log("Email sent:", result);
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: %s", info.messageId);
     return true;
-
   } catch (error) {
-    console.error("Brevo email error:");
-    console.error(error);
-    console.error(error.response?.body);
+    console.error("Nodemailer email error:", error);
     return false;
   }
 };

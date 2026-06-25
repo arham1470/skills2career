@@ -80,7 +80,7 @@ const Hero = () => {
               </div>
             </Link>
 
-            <Link to="/career-pathway" className="group bg-white/95 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 opacity-80">
+            {/* <Link to="/career-pathway" className="group bg-white/95 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 opacity-80">
               <div className="flex items-start gap-4">
                 <div className="bg-purple-100 p-3 rounded-xl group-hover:bg-purple-600 transition-colors duration-300 shrink-0">
                   <BookOpen className="w-7 h-7 text-purple-600 group-hover:text-white transition-colors duration-300" />
@@ -90,7 +90,7 @@ const Hero = () => {
                   <p className="text-gray-600 text-sm leading-relaxed">Discover courses and programs you qualify for based on your education.</p>
                 </div>
               </div>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

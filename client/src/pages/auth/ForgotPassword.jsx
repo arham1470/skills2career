@@ -102,7 +102,7 @@ const ForgotPassword = () => {
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-gray-200/80 shadow-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-10 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/12 via-transparent to-primary-300/12"></div>
             <div className="relative z-10 flex justify-center mb-4">
               <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-inner">
                 {step === 4 ? (
