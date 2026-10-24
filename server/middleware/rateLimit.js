@@ -2,7 +2,7 @@ const rateLimit = require("express-rate-limit");
 
 exports.apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: process.env.NODE_ENV === "production" ? 100 : 5000, // Higher limit in development
   message: { message: "Too many requests, please try again later." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -10,6 +10,6 @@ exports.apiLimiter = rateLimit({
 
 exports.authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20, // Stricter limit for auth routes
+  max: process.env.NODE_ENV === "production" ? 20 : 1000, // Higher limit in development
   message: { message: "Too many login attempts, please try again later." },
 });
